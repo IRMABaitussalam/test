@@ -61,7 +61,7 @@
         {{/* Tampilkan Foto jika ada */}}
         {{ if $image }}
         <div class="achievement-banner">
-          <img src="{{ $image | relURL }}" alt="{{ $title }}" loading="lazy">
+          <img src="{{ $image | absURL }}" alt="{{ $title }}" loading="lazy">
         </div>
         {{ end }}
         
