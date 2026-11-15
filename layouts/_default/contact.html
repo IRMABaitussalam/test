@@ -1,0 +1,152 @@
+{{ define "main" }}
+<article class="page-contact">
+  <header class="page-header reveal">
+    <p class="section-kicker"><i class="fa-solid fa-envelope"></i> Hubungi</p>
+    <h1>{{ .Title }}</h1>
+    {{ partial "divider.html" . }}
+    <p class="page-description">
+      Apakah Anda memiliki pertanyaan, saran, atau membutuhkan bantuan? Jangan ragu untuk menghubungi kami. Anda dapat mengisi formulir di bawah ini untuk mengirim pesan langsung ke email kami atau menghubungi kami melalui WhatsApp untuk respons yang lebih cepat.
+    </p>
+  </header>
+
+  <!-- Contact Person -->
+  <div class="contact-persons reveal delay-1">
+    <h3><i class="fa-solid fa-address-book"></i> Contact Person</h3>
+    <ul class="contact-list">
+      <li>
+        <i class="fa-solid fa-envelope" style="color:var(--accent)"></i> 
+        <div class="contact-text">
+          <strong>Email:</strong> 
+          <a href="mailto:irmabaitussalam22garut@gmail.com">irmabaitussalam22garut@gmail.com</a>
+        </div>
+      </li>
+      <li>
+        <i class="fa-brands fa-whatsapp"></i> 
+        <div class="contact-text">
+          <strong>Kang Ridho:</strong> 
+          <a href="https://api.whatsapp.com/send?phone=6285860536014" target="_blank" rel="noopener">+62 858-6053-6014</a>
+        </div>
+      </li>
+      <li>
+        <i class="fa-brands fa-whatsapp"></i> 
+        <div class="contact-text">
+          <strong>Teh Risma:</strong> 
+          <a href="https://api.whatsapp.com/send?phone=6285871658944" target="_blank" rel="noopener">+62 858-7165-8944</a>
+        </div>
+      </li>
+      <li>
+        <i class="fa-brands fa-whatsapp"></i> 
+        <div class="contact-text">
+          <strong>Teh Rosalita:</strong> 
+          <a href="https://api.whatsapp.com/send?phone=6283111061487" target="_blank" rel="noopener">+62 831-1106-1487</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="form-tabs reveal delay-1">
+    <button class="tab-btn active" data-target="email-form">Email</button>
+    <button class="tab-btn" data-target="whatsapp-form">WhatsApp</button>
+  </div>
+
+  <!-- Tab Content: Email Form -->
+  <div id="email-form" class="tab-pane active">
+    <form id="contact-form-email" class="contact-form reveal delay-2" novalidate>
+      <div class="form-group">
+        <label for="name"><i class="fa-solid fa-user"></i> Nama Lengkap <span class="required">*</span></label>
+        <input type="text" id="name" name="name" required minlength="3" placeholder="Contoh: Gilang Ramdani">
+        <span class="error-message" id="name-error"></span>
+      </div>
+      <div class="form-group">
+        <label for="email"><i class="fa-solid fa-envelope"></i> Alamat Email <span class="required">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="emailaddress@example.com">
+        <span class="error-message" id="email-error"></span>
+      </div>
+      <div class="form-group">
+        <label for="subject"><i class="fa-solid fa-tag"></i> Alasan Menghubungi</label>
+        <input type="text" id="subject" name="subject" placeholder="Contoh: Pertanyaan Umum">
+      </div>
+      <div class="form-group">
+        <label for="message"><i class="fa-solid fa-comment-dots"></i> Tulis Pesanmu <span class="required">*</span></label>
+        <textarea id="message" name="message" rows="5" required minlength="10" placeholder="Ketik..."></textarea>
+        <span class="error-message" id="message-error"></span>
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-shield-halved"></i> Verifikasi <span class="required">*</span></label>
+        <div class="h-captcha" data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"></div>
+        <span class="error-message" id="captcha-error"></span>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="agree" name="agree" required>
+          <span>Dengan mengklik tombol "Kirim Sekarang", Anda sudah menyetujui Syarat & Ketentuan kami.</span>
+        </label>
+        <span class="error-message" id="agree-error"></span>
+      </div>
+      <button type="submit" class="btn-primary btn-block" id="submit-btn-email">
+        <i class="fa-solid fa-paper-plane"></i> Kirim Sekarang
+      </button>
+      <p id="form-status-email" class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <!-- Tab Content: WhatsApp Form -->
+  <div id="whatsapp-form" class="tab-pane">
+    <form id="contact-form-wa" class="contact-form reveal delay-2" novalidate>
+      <div class="form-group">
+        <label for="name2"><i class="fa-solid fa-user"></i> Nama Lengkap <span class="required">*</span></label>
+        <input type="text" id="name2" name="name" required minlength="3" placeholder="Contoh: Gilang Ramdani">
+        <span class="error-message" id="name2-error"></span>
+      </div>
+      <div class="form-group">
+        <label for="no-whatsapp"><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp <span class="required">*</span></label>
+        <input type="tel" id="no-whatsapp" name="no-whatsapp" required placeholder="+62 8xx-xxxx-xxxx" pattern="[0-9+ ]{10,18}">
+        <span class="error-message" id="no-whatsapp-error"></span>
+      </div>
+      <div class="form-group">
+        <label for="subject2"><i class="fa-solid fa-tag"></i> Alasan Menghubungi</label>
+        <input type="text" id="subject2" name="subject" placeholder="Contoh: Pertanyaan Umum">
+      </div>
+      <div class="form-group">
+        <label for="message2"><i class="fa-solid fa-comment-dots"></i> Tulis Pesanmu <span class="required">*</span></label>
+        <textarea id="message2" name="message" rows="5" required minlength="10" placeholder="Ketik..."></textarea>
+        <span class="error-message" id="message2-error"></span>
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-shield-halved"></i> Verifikasi <span class="required">*</span></label>
+        <div class="h-captcha" data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"></div>
+        <span class="error-message" id="captcha-error-wa"></span>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="agree2" name="agree" required>
+          <span>Dengan mengklik tombol "Kirim Sekarang", Anda sudah menyetujui Syarat & Ketentuan kami.</span>
+        </label>
+        <span class="error-message" id="agree2-error"></span>
+      </div>
+      <button type="submit" class="btn-primary btn-block" id="submit-btn-wa">
+        <i class="fa-brands fa-whatsapp"></i> Kirim Sekarang
+      </button>
+      <p id="form-status-wa" class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <!-- =========================================
+       OVERLAY SUKSES (FULL SCREEN)
+       ========================================= -->
+  <div id="success-overlay" class="success-overlay" aria-hidden="true">
+    <div class="success-content">
+      <button class="success-close" id="close-success" aria-label="Tutup">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="success-icon">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h2>Pesan Terkirim!</h2>
+      <p id="success-message">Terima kasih telah menghubungi kami. Kami akan segera membalas pesan Anda.</p>
+    </div>
+  </div>
+
+</article>
+{{ end }}

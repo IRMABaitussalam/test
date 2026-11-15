@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <!-- ===== Loading Screen ===== -->
+  <div id="page-loader" class="page-loader" aria-hidden="true">
+    <div class="loader-bg-pattern"></div>
+    <div class="loader-content">
+      <div class="loader-star-wrap">
+        <svg viewBox="0 0 100 100" class="loader-star" aria-hidden="true">
+          <defs>
+            <linearGradient id="loaderGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f0d97d"/>
+              <stop offset="50%" stop-color="#d4af37"/>
+              <stop offset="100%" stop-color="#b8941f"/>
+            </linearGradient>
+          </defs>
+          <g class="star-rotate-cw">
+            <rect x="25" y="25" width="50" height="50" rx="1.5"
+                  fill="none" stroke="url(#loaderGold)" stroke-width="1.2"/>
+          </g>
+          <g class="star-rotate-ccw">
+            <rect x="25" y="25" width="50" height="50" rx="1.5"
+                  fill="none" stroke="url(#loaderGold)" stroke-width="1.2"
+                  transform="rotate(45 50 50)"/>
+          </g>
+          <circle cx="50" cy="50" r="6" fill="url(#loaderGold)" class="star-core"/>
+        </svg>
+      </div>
+      <h1 class="loader-title">IRMA Baitussalam</h1>
+      <p class="loader-subtitle">SMAN 22 Garut</p>
+      <div class="loader-dots" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  {{ partial "header.html" . }}
+  <main class="container main-content">
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "footer.html" . }}
+  {{ partial "scripts.html" . }}
+</body>
+</html>

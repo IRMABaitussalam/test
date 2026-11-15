@@ -1,0 +1,6 @@
+{{ define "main" }}
+<article class="page-single">
+  <h1 class="reveal">{{ .Title }}</h1>
+  {{ with .Content }}<div class="reveal delay-1">{{ . }}</div>{{ end }}
+</article>
+{{ end }}

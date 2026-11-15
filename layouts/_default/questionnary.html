@@ -1,0 +1,99 @@
+{{ define "main" }}
+<article class="page-kuesioner">
+  <header class="page-header reveal">
+    <p class="section-kicker"><i class="fa-solid fa-clipboard-list"></i> Kuesioner</p>
+    <h1>{{ .Title }}</h1>
+    {{ partial "divider.html" . }}
+    <p class="page-description">
+      Bantu kami menjadi lebih baik dengan memberikan kesan, kritik, dan saran Anda mengenai Ekstrakurikuler IRMA Baitussalam.
+    </p>
+  </header>
+
+  <!-- Contact Person -->
+  <div class="contact-persons reveal delay-1">
+    <h3><i class="fa-solid fa-address-book"></i> Contact Person</h3>
+    <ul class="contact-list">
+      <li>
+        <i class="fa-brands fa-whatsapp"></i> 
+        <strong>Kang Ridho:</strong> 
+        <a href="https://api.whatsapp.com/send?phone=6285860536014" target="_blank" rel="noopener">+62 858-6053-6014</a>
+      </li>
+      <li>
+        <i class="fa-brands fa-whatsapp"></i> 
+        <strong>Teh Risma:</strong> 
+        <a href="https://api.whatsapp.com/send?phone=6285871658944" target="_blank" rel="noopener">+62 858-7165-8944</a>
+      </li>
+      <li>
+        <i class="fa-brands fa-whatsapp"></i> 
+        <strong>Teh Rosalita:</strong> 
+        <a href="https://api.whatsapp.com/send?phone=6283111061487" target="_blank" rel="noopener">+62 831-1106-1487</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Formulir Kuesioner -->
+  <form id="kuesioner-form" class="contact-form kuesioner-form reveal delay-2" novalidate>
+    <div class="form-group">
+      <label for="nama"><i class="fa-solid fa-user"></i> Nama Lengkap <span class="required">*</span></label>
+      <input type="text" id="nama" name="nama" required minlength="3" placeholder="Contoh: Gilang Ramdani">
+      <span class="error-message" id="nama-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="kelas"><i class="fa-solid fa-school"></i> Kelas <span class="required">*</span></label>
+      <input type="text" id="kelas" name="kelas" required placeholder="Contoh: XII - 1">
+      <span class="error-message" id="kelas-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="instansi"><i class="fa-solid fa-building"></i> Instansi <span class="required">*</span></label>
+      <p class="form-hint">Bisa berupa nama Ekstrakurikuler yang diikuti (jika bukan anggota) atau nama sekolah asal.</p>
+      <input type="text" id="instansi" name="instansi" required placeholder="Contoh: SMA Negeri 22 Garut">
+      <span class="error-message" id="instansi-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="no-whatsapp"><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp <span class="required">*</span></label>
+      <input type="tel" id="no-whatsapp" name="no-whatsapp" required placeholder="+62 8xx-xxxx-xxxx" pattern="[0-9+ ]{10,18}">
+      <span class="error-message" id="no-whatsapp-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="kesan"><i class="fa-solid fa-face-smile"></i> Kesan mengenai Ekstrakurikuler IRMA Baitussalam <span class="required">*</span></label>
+      <textarea id="kesan" name="kesan" rows="4" required minlength="5" placeholder="Tulis kesanmu..."></textarea>
+      <span class="error-message" id="kesan-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="kritik"><i class="fa-solid fa-comment-dots"></i> Kritik untuk Ekstrakurikuler IRMA Baitussalam <span class="required">*</span></label>
+      <textarea id="kritik" name="kritik" rows="4" required minlength="5" placeholder="Tulis kritikmu..."></textarea>
+      <span class="error-message" id="kritik-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="saran"><i class="fa-solid fa-lightbulb"></i> Saran untuk Ekstrakurikuler IRMA Baitussalam <span class="required">*</span></label>
+      <textarea id="saran" name="saran" rows="4" required minlength="5" placeholder="Tulis saranmu..."></textarea>
+      <span class="error-message" id="saran-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label><i class="fa-solid fa-shield-halved"></i> Verifikasi <span class="required">*</span></label>
+      <div class="h-captcha" data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"></div>
+      <span class="error-message" id="captcha-error"></span>
+    </div>
+
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="agree" name="agree" required>
+        <span>Dengan mengklik tombol "Kirim Sekarang", Anda sudah menyetujui <a href="/syarat-ketentuan">Syarat & Ketentuan</a>, <a href="/kebijakan-privasi">Kebijakan Privasi</a>, dan <a href="/pedoman-komunitas">Pedoman Komunitas</a> kami.</span>
+      </label>
+      <span class="error-message" id="agree-error"></span>
+    </div>
+
+    <button type="submit" class="btn-primary btn-block" id="submit-btn">
+      <i class="fa-solid fa-paper-plane"></i> Kirim Sekarang
+    </button>
+    <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+  </form>
+</article>
+{{ end }}

@@ -1,0 +1,52 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="{{ .Site.BaseURL }}" class="logo" aria-label="Beranda IRMA Baitussalam">
+      <span class="logo-mark">
+        <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="9" y="9" width="22" height="22" rx="1"/>
+            <rect x="9" y="9" width="22" height="22" rx="1" transform="rotate(45 20 20)"/>
+          </g>
+          <circle cx="20" cy="20" r="2.6" fill="currentColor"/>
+        </svg>
+      </span>
+      <span class="logo-text">
+        <strong>IRMA Baitussalam</strong>
+        <small>SMAN 22 Garut</small>
+      </span>
+    </a>
+
+    <!-- Menu Navigasi dengan Indikator Aktif -->
+    <nav class="nav" id="main-nav">
+      <a href="{{ .Site.BaseURL }}" class="{{ if .IsHome }}active{{ end }}">
+        <i class="fa-solid fa-house"></i> Beranda
+      </a>
+      <a href="{{ "tentang/" | relURL }}" class="{{ if strings.Contains .RelPermalink "tentang" }}active{{ end }}">
+        <i class="fa-solid fa-mosque"></i> Tentang
+      </a>
+      <a href="{{ "galeri/" | relURL }}" class="{{ if strings.Contains .RelPermalink "galeri" }}active{{ end }}">
+        <i class="fa-solid fa-images"></i> Galeri
+      </a>
+      <a href="{{ "kuesioner/" | relURL }}" class="{{ if strings.Contains .RelPermalink "kuesioner" }}active{{ end }}">
+        <i class="fa-solid fa-clipboard-list"></i> Kuesioner
+      </a>
+      <a href="{{ "kontak/" | relURL }}" class="{{ if strings.Contains .RelPermalink "kontak" }}active{{ end }}">
+        <i class="fa-solid fa-envelope"></i> Kontak
+      </a>
+    </nav>
+
+    <div class="header-actions">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Ganti tema">
+        <i class="fa-solid fa-sun icon-sun"></i>
+        <i class="fa-solid fa-moon icon-moon"></i>
+      </button>
+
+      <button id="hamburger" class="hamburger" aria-label="Buka menu" aria-expanded="false" aria-controls="main-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+  <div class="nav-overlay" id="nav-overlay"></div>
+</header>

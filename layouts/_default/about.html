@@ -1,0 +1,150 @@
+{{ define "main" }}
+<article class="page-about">
+  <header class="page-header reveal">
+    <p class="section-kicker"><i class="fa-solid fa-mosque"></i> Tentang Kami</p>
+    <h1>{{ .Title }}</h1>
+    {{ partial "divider.html" . }}
+    <p class="page-description">
+      SMA Negeri 22 Garut, sebuah sekolah menengah atas yang terletak di tengah-tengah Kecamatan Cisompet, Kabupaten Garut, Jawa Barat, telah menjadi tempat bagi berbagai ekstrakurikuler. Salah satu yang menonjol adalah Ikatan Remaja Masjid (IRMA) Baitussalam.
+    </p>
+  </header>
+
+  <!-- Tentang Kami -->
+  <section class="about-section reveal">
+    <h2 class="section-title">Tentang Kami</h2>
+    <div class="about-content">
+      <div class="about-image-wrapper">
+        <img src="/images/galeri/bangunan-depan-sman-22-garut.jpeg" alt="Tentang IRMA Baitussalam" class="about-image" loading="lazy">
+      </div>
+      <p>SMA Negeri 22 Garut, merupakan sebuah sekolah menengah atas yang terletak di tengah-tengah Kecamatan Cisompet, Kabupaten Garut, Jawa Barat telah menjadi tempat bagi berbagai jenis ekstrakurikuler yang bertujuan untuk mengembangkan bakat dan minat siswa. Salah satu ekstrakurikuler yang menonjol di SMA ini adalah Ikatan Remaja Masjid (IRMA) Baitussalam, sebuah wadah bagi siswa untuk memperkuat kehidupan agama mereka.</p>
+    </div>
+  </section>
+
+  <!-- Apa itu IRMA? -->
+  <section class="about-section reveal">
+    <h2 class="section-title">Apa itu IRMA?</h2>
+    <div class="about-content">
+      <div class="about-image-wrapper">
+        <img src="/images/galeri/upacara-hut-ri-ke-78.jpeg" alt="Apa itu IRMA Baitussalam" class="about-image" loading="lazy">
+      </div>
+      <p>Ikatan Remaja Masjid (IRMA) Baitussalam adalah sebuah organisasi yang didirikan dengan tujuan untuk membina dan mengembangkan kegiatan keagamaan di kalangan remaja. Ekstrakurikuler ini memiliki peran penting dalam menjembatani siswa SMA Negeri 22 Garut dengan nilai-nilai agama dan memperkuat hubungan mereka dengan masjid setempat yang ada di lingkungan sekitarnya.</p>
+      <p>Selama bergabung dengan IRMA Baitussalam, siswa-siswi SMA Negeri 22 Garut memiliki kesempatan untuk memperluas lingkaran pergaulan mereka dengan teman-teman sebaya yang memiliki minat yang sama dalam meningkatkan kehidupan beragama. Mereka dapat berbagi pengetahuan, pengalaman, dan inspirasi dalam memperkuat keyakinan agama mereka.</p>
+    </div>
+  </section>
+
+  <!-- Fokus Utama Kami -->
+  <section class="about-section reveal">
+    <h2 class="section-title">Fokus Utama Kami</h2>
+    <div class="about-content">
+      <div class="about-image-wrapper">
+        <img src="/images/galeri/kumpulan-rutinan.jpeg" alt="Fokus Utama IRMA Baitussalam" class="about-image" loading="lazy">
+      </div>
+      <p>Salah satu fokus utama IRMA Baitussalam adalah memberikan pemahaman yang mendalam tentang ajaran Islam kepada siswa. Dalam rangka mencapai tujuan ini, ekstrakurikuler ini menyelenggarakan berbagai kegiatan, seperti pengajian, kajian kitab, diskusi agama, latihan marawis, dan kegiatan amal sosial. IRMA Baitussalam juga menyelenggarakan program-program pendidikan agama yang dirancang untuk meningkatkan pemahaman siswa tentang nilai-nilai agama Islam dan akhlak mahmudah (perilaku terpuji).</p>
+      <p>Dalam upaya memperluas pengaruh positifnya, IRMA Baitussalam juga bekerja sama dengan lembaga dan komunitas lain di luar SMA Negeri 22 Garut. Mereka terlibat dalam kegiatan bersama dengan organisasi keagamaan lainnya, mengikuti seminar dan lokakarya yang melibatkan pembicara yang berpengalaman, perlombaan yang berkaitan dengan keagamaan, atau menginisiasi kegiatan keagamaan berskala lebih besar, seperti musyawarah dengan pengurus IRMA Kabupaten Garut dan IRMA Jawa Barat.</p>
+    </div>
+  </section>
+
+  <!-- Visi & Misi -->
+  <section class="about-section reveal">
+    <h2 class="section-title">Visi & Misi</h2>
+    <div class="visi-misi-grid">
+      <div class="visi-card">
+        <h3><i class="fa-solid fa-eye"></i> Visi Kami</h3>
+        <p>Menjadikan IRMA SMAN 22 Garut sebagai ekstrakurikuler yang aktif dan kreatif, menjadi contoh yang baik kepada siswa/i SMAN 22 Garut, serta mewujudkan generasi yang beriman, berilmu, bertaqwa, dan berakhlak mulia serta bertanggung jawab.</p>
+      </div>
+      <div class="misi-card">
+        <h3><i class="fa-solid fa-list-check"></i> Misi Kami</h3>
+        <ul class="misi-list">
+          <li>Mewujudkan generasi muda yang cinta Allah dan Rasul-Nya.</li>
+          <li>Menumbuhkan pribadi berakhlak mulia berlandaskan nilai agama dalam kehidupan sehari-hari.</li>
+          <li>Aktif membuat kegiatan yang menarik minat siswa/i SMAN 22 Garut.</li>
+          <li>Bekerja sama dengan OSIS atau ekstrakurikuler lain untuk memaksimalkan program kerja.</li>
+          <li>Menjadikan IRMA sebagai wadah menyalurkan minat dan bakat di bidang religi (dakwah, MTQ, MQK, dll).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pengurus dengan Tab -->
+  <section class="about-section reveal">
+    <h2 class="section-title">Pengurus IRMA Baitussalam</h2>
+    <div class="form-tabs" id="pengurus-tabs">
+      {{ range $i, $p := .Site.Data.pengurus }}
+        <button class="tab-btn {{ if eq $i 0 }}active{{ end }}" data-target="periode-{{ $i }}">{{ $p.periode }}</button>
+      {{ end }}
+    </div>
+
+    {{ range $i, $p := .Site.Data.pengurus }}
+      <div id="periode-{{ $i }}" class="tab-pane {{ if eq $i 0 }}active{{ end }}">
+        <div class="pengurus-grid reveal">
+          {{ range $p.anggota }}
+            {{ $nama := .nama }}
+            <div class="pengurus-card reveal">
+              <div class="pengurus-photo-wrap">
+                {{ if .image }}
+                  <img src="{{ .image }}" alt="Foto {{ $nama }}" class="pengurus-photo" loading="lazy">
+                {{ else }}
+                  <div class="pengurus-photo-fallback"><i class="fa-solid fa-user-tie"></i></div>
+                {{ end }}
+              </div>
+              <div class="pengurus-info">
+                <h4>{{ $nama }}</h4>
+                <p class="jabatan">{{ .jabatan }}</p>
+                <p class="quote">“{{ .quote }}”</p>
+                <div class="pengurus-socials">
+                  {{ with .instagram }}
+                    <a href="https://instagram.com/{{ . }}" target="_blank" rel="noopener" class="social-link ig" aria-label="Instagram {{ $nama }}">
+                      <i class="fa-brands fa-instagram"></i>
+                    </a>
+                  {{ end }}
+                  {{ with .facebook }}
+                    <a href="https://facebook.com/{{ . }}" target="_blank" rel="noopener" class="social-link fb" aria-label="Facebook {{ $nama }}">
+                      <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                  {{ end }}
+                  {{ with .whatsapp }}
+                    <a href="https://wa.me/{{ . }}" target="_blank" rel="noopener" class="social-link wa" aria-label="WhatsApp {{ $nama }}">
+                      <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                  {{ end }}
+                </div>
+              </div>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    {{ end }}
+  </section>
+
+  <!-- FAQ -->
+  <section class="about-section reveal">
+    <h2 class="section-title">FAQ</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Apa saja yang bisa saya dapatkan jika bergabung dengan IRMA Baitussalam?</summary>
+        <div class="faq-answer">
+          <p>Anda akan mendapatkan pemahaman agama yang mendalam, komunitas yang mendukung, pengembangan sikap kepemimpinan dan jiwa sosial, pengalaman berorganisasi, serta kesempatan berteman lebih luas.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Apa saja program kerja IRMA Baitussalam?</summary>
+        <div class="faq-answer">
+          <p>Program kerja meliputi Tadarus Pagi, BBM (Bersih-Bersih Masjid), Tahfidz Qur'an, Kajian Kitab Kuning, Majlis Ilmu, Pelatihan MC/Moderator, Pelatihan Desain, Pidato, lomba keagamaan, Marawis, dan masih banyak lagi.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Bagaimana cara bergabung dengan IRMA Baitussalam?</summary>
+        <div class="faq-answer">
+          <p>Sangat mudah! Cukup isi formulir pendaftaran di <a href="https://irmabaitussalam.github.io/pendaftaran-anggota-baru" target="_blank" rel="noopener">tautan ini</a>.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="about-cta reveal">
+    <a href="https://irmabaitussalam.github.io/pendaftaran-anggota-baru" class="btn-primary" target="_blank" rel="noopener"><i class="fa-solid fa-user-plus"></i> Daftar Sekarang</a>
+    <a href="https://irmabaitussalam.github.io/kuesioner" class="btn-outline" target="_blank" rel="noopener"><i class="fa-solid fa-clipboard-list"></i> Isi Kuesioner</a>
+  </section>
+</article>
+{{ end }}

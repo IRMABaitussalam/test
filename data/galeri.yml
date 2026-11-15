@@ -1,0 +1,20 @@
+# Tambahkan foto baru dengan menyalin format di bawah ini.
+# Jangan lupa taruh file fotonya di folder static/images/galeri/
+
+- src: "/images/galeri/kegiatan-1.jpg"
+  caption: "Kegiatan kajian rutin"
+
+- src: "/images/galeri/kegiatan-2.jpg"
+  caption: "Lomba Dakwah Cadisdik Wilayah XI"
+
+- src: "/images/galeri/kegiatan-3.jpg"
+  caption: "Buka puasa bersama"
+
+- src: "/images/galeri/kegiatan-4.jpg"
+  caption: "Lokakarya IRMA Jawa Barat"
+
+- src: "/images/galeri/kegiatan-5.jpg"
+  caption: "Bakti sosial Ramadhan"
+
+- src: "/images/galeri/kegiatan-6.jpg"
+  caption: "Musabaqah Qira'atil Kutub"

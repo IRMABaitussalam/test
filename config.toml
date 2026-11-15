@@ -1,0 +1,13 @@
+baseURL = "https://irmabaitussalam.github.io/"
+languageCode = "id-id"
+title = "IRMA Baitussalam SMAN 22 Garut"
+enableRobotsTXT = true
+
+[params]
+  description = "Mewujudkan remaja masjid yang beriman, bertaqwa, berkarakter, cerdas, dan terampil"
+  hcaptchaSiteKey = "2ee267ae-c996-4436-9246-748ed03caa66"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

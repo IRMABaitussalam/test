@@ -1,0 +1,82 @@
+{{ define "main" }}
+<section class="hero">
+  <div class="hero-pattern" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <p class="hero-arabic reveal" lang="ar" dir="rtl">إِنَّ اللّٰهَ جَمِيْلٌ يُحِبُّ الْجَمَالَ</p>
+
+    <h1 class="site-title reveal delay-1">
+      <span class="title-main">IRMA</span>
+      <span class="title-accent">Baitussalam</span>
+      <span class="title-sub">SMAN 22 Garut</span>
+    </h1>
+
+    <div class="hero-divider reveal delay-1">{{ partial "divider.html" . }}</div>
+
+    <p class="tagline reveal delay-2">{{ .Params.hero.tagline }}</p>
+
+    <div class="cta reveal delay-3">
+      <a href="{{ "kontak/" | relURL }}" class="btn-primary">
+        <i class="fa-solid fa-paper-plane"></i> Hubungi Kami
+      </a>
+      <a href="{{ "galeri/" | relURL }}" class="btn-outline">
+        <i class="fa-solid fa-images"></i> Lihat Galeri
+      </a>
+    </div>
+    <div class="scroll-hint reveal delay-3" aria-hidden="true">
+      <span>Gulir</span>
+      <i class="fa-solid fa-chevron-down"></i>
+    </div>
+  </div>
+</section>
+
+<section class="achievements">
+  <div class="section-header reveal">
+    <p class="section-kicker"><i class="fa-solid fa-star"></i> Pencapaian</p>
+    <h2 class="section-title">Prestasi Kami</h2>
+    {{ partial "divider.html" . }}
+  </div>
+
+  <ul class="achievement-list">
+    {{ range $i, $a := .Params.achievements }}
+      {{ $title := "" }}
+      {{ $image := "" }}
+      
+      {{/* Deteksi apakah data berupa teks biasa atau objek (punya title & image) */}}
+      {{ if reflect.IsMap $a }}
+        {{ $title = $a.title }}
+        {{ $image = $a.image }}
+      {{ else }}
+        {{ $title = $a }}
+      {{ end }}
+
+      {{ $icon := "fa-trophy" }}
+      {{ if eq (mod $i 4) 1 }}{{ $icon = "fa-medal" }}{{ end }}
+      {{ if eq (mod $i 4) 2 }}{{ $icon = "fa-award" }}{{ end }}
+      {{ if eq (mod $i 4) 3 }}{{ $icon = "fa-crown" }}{{ end }}
+
+      <li class="achievement-card reveal {{ if eq (mod $i 3) 1 }}delay-1{{ else if eq (mod $i 3) 2 }}delay-2{{ end }}">
+        
+        {{/* Tampilkan Foto jika ada */}}
+        {{ if $image }}
+        <div class="achievement-banner">
+          <img src="{{ $image }}" alt="{{ $title }}" loading="lazy">
+        </div>
+        {{ end }}
+        
+        <div class="achievement-body">
+          <div class="achievement-icon"><i class="fa-solid {{ $icon }}"></i></div>
+          <p>{{ $title }}</p>
+          <span class="card-corner" aria-hidden="true"></span>
+        </div>
+      </li>
+    {{ end }}
+  </ul>
+</section>
+
+<section class="mini-cta reveal">
+  {{ partial "divider.html" . }}
+  <p class="mini-cta-arabic" lang="ar" dir="rtl">وَاللّٰهُ الْمُوَفِّقُ إِلَى أَقْوَمِ الطَّرِيْقِ</p>
+</section>
+{{ end }}
