@@ -14,7 +14,7 @@
     <h2 class="section-title">Tentang Kami</h2>
     <div class="about-content">
       <div class="about-image-wrapper">
-        <img src="{{ '/images/galeri/bangunan-depan-sman-22-garut.jpeg' | relUrl }}" alt="Tentang IRMA Baitussalam" class="about-image" loading="lazy">
+        <img src="{{ "/images/galeri/bangunan-depan-sman-22-garut.jpeg" | relURL }}" alt="Tentang IRMA Baitussalam" class="about-image" loading="lazy">
       </div>
       <p>SMA Negeri 22 Garut, merupakan sebuah sekolah menengah atas yang terletak di tengah-tengah Kecamatan Cisompet, Kabupaten Garut, Jawa Barat telah menjadi tempat bagi berbagai jenis ekstrakurikuler yang bertujuan untuk mengembangkan bakat dan minat siswa. Salah satu ekstrakurikuler yang menonjol di SMA ini adalah Ikatan Remaja Masjid (IRMA) Baitussalam, sebuah wadah bagi siswa untuk memperkuat kehidupan agama mereka.</p>
     </div>
@@ -25,7 +25,7 @@
     <h2 class="section-title">Apa itu IRMA?</h2>
     <div class="about-content">
       <div class="about-image-wrapper">
-        <img src="/images/galeri/upacara-hut-ri-ke-78.jpeg" alt="Apa itu IRMA Baitussalam" class="about-image" loading="lazy">
+        <img src="{{ "/images/galeri/upacara-hut-ri-ke-78.jpeg" | relURL }}" alt="Apa itu IRMA Baitussalam" class="about-image" loading="lazy">
       </div>
       <p>Ikatan Remaja Masjid (IRMA) Baitussalam adalah sebuah organisasi yang didirikan dengan tujuan untuk membina dan mengembangkan kegiatan keagamaan di kalangan remaja. Ekstrakurikuler ini memiliki peran penting dalam menjembatani siswa SMA Negeri 22 Garut dengan nilai-nilai agama dan memperkuat hubungan mereka dengan masjid setempat yang ada di lingkungan sekitarnya.</p>
       <p>Selama bergabung dengan IRMA Baitussalam, siswa-siswi SMA Negeri 22 Garut memiliki kesempatan untuk memperluas lingkaran pergaulan mereka dengan teman-teman sebaya yang memiliki minat yang sama dalam meningkatkan kehidupan beragama. Mereka dapat berbagi pengetahuan, pengalaman, dan inspirasi dalam memperkuat keyakinan agama mereka.</p>
@@ -37,7 +37,7 @@
     <h2 class="section-title">Fokus Utama Kami</h2>
     <div class="about-content">
       <div class="about-image-wrapper">
-        <img src="/images/galeri/kumpulan-rutinan.jpeg" alt="Fokus Utama IRMA Baitussalam" class="about-image" loading="lazy">
+        <img src="{{ "/images/galeri/kumpulan-rutinan.jpeg" | relURL }}" alt="Fokus Utama IRMA Baitussalam" class="about-image" loading="lazy">
       </div>
       <p>Salah satu fokus utama IRMA Baitussalam adalah memberikan pemahaman yang mendalam tentang ajaran Islam kepada siswa. Dalam rangka mencapai tujuan ini, ekstrakurikuler ini menyelenggarakan berbagai kegiatan, seperti pengajian, kajian kitab, diskusi agama, latihan marawis, dan kegiatan amal sosial. IRMA Baitussalam juga menyelenggarakan program-program pendidikan agama yang dirancang untuk meningkatkan pemahaman siswa tentang nilai-nilai agama Islam dan akhlak mahmudah (perilaku terpuji).</p>
       <p>Dalam upaya memperluas pengaruh positifnya, IRMA Baitussalam juga bekerja sama dengan lembaga dan komunitas lain di luar SMA Negeri 22 Garut. Mereka terlibat dalam kegiatan bersama dengan organisasi keagamaan lainnya, mengikuti seminar dan lokakarya yang melibatkan pembicara yang berpengalaman, perlombaan yang berkaitan dengan keagamaan, atau menginisiasi kegiatan keagamaan berskala lebih besar, seperti musyawarah dengan pengurus IRMA Kabupaten Garut dan IRMA Jawa Barat.</p>
@@ -82,7 +82,7 @@
             <div class="pengurus-card reveal">
               <div class="pengurus-photo-wrap">
                 {{ if .image }}
-                  <img src="{{ .image }}" alt="Foto {{ $nama }}" class="pengurus-photo" loading="lazy">
+                  <img src="{{ .image | relURL }}" alt="Foto {{ $nama }}" class="pengurus-photo" loading="lazy">
                 {{ else }}
                   <div class="pengurus-photo-fallback"><i class="fa-solid fa-user-tie"></i></div>
                 {{ end }}
