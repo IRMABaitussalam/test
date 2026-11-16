@@ -45,7 +45,7 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 
 /* =========================================================
-   3. HAMBURGER MENU (MOBILE)
+   3. HAMBURGER MENU
    ========================================================= */
 (function initHamburger() {
   var btn = document.getElementById('hamburger');
@@ -79,7 +79,7 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 
 /* =========================================================
-   4. SCROLL REVEAL (Anti-FOUC)
+   4. SCROLL REVEAL
    ========================================================= */
 (function initScrollReveal() {
   var els = document.querySelectorAll('.reveal');
@@ -181,7 +181,7 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 
 /* =========================================================
-   7. TAB PENGURUS (HALAMAN TENTANG)
+   7. TAB PENGURUS
    ========================================================= */
 (function initPengurusTabs() {
   var tabs = document.querySelectorAll('#pengurus-tabs .tab-btn');
@@ -275,11 +275,8 @@ async function verifyTokenOnServer(token) {
 
 
 /* =========================================================
-   10. VALIDATORS — PESAN SPESIFIK PER FIELD
-   Semua validator mengembalikan { valid, message }
+   10. VALIDATORS
    ========================================================= */
-
-// Nama (dipakai untuk Nama Lengkap)
 function validateName(value, label) {
   var v = (value || '').trim();
   if (!v) return { valid: false, message: label + ' wajib diisi.' };
@@ -287,7 +284,6 @@ function validateName(value, label) {
   return { valid: true, message: '' };
 }
 
-// Teks umum (pesan, kesan, kritik, saran, kelas, instansi)
 function validateText(value, label, minLength) {
   var v = (value || '').trim();
   if (!v) return { valid: false, message: label + ' wajib diisi.' };
@@ -297,7 +293,6 @@ function validateText(value, label, minLength) {
   return { valid: true, message: '' };
 }
 
-// Nomor WhatsApp
 function validateWhatsAppNumber(value) {
   var v = (value || '').trim();
   if (!v) return { valid: false, message: 'Nomor WhatsApp wajib diisi.' };
@@ -310,28 +305,16 @@ function validateWhatsAppNumber(value) {
   return { valid: true, message: '' };
 }
 
-// Email (validator canggih — 14 skenario)
 function validateEmailDetailed(email) {
-  if (!email || email.trim() === '') {
-    return { valid: false, message: 'Email wajib diisi.' };
-  }
-
+  if (!email || email.trim() === '') return { valid: false, message: 'Email wajib diisi.' };
   email = email.trim();
 
-  if (/\s/.test(email)) {
-    return { valid: false, message: 'Email tidak boleh mengandung spasi.' };
-  }
-  if (email.length > 254) {
-    return { valid: false, message: 'Email terlalu panjang (maksimal 254 karakter).' };
-  }
+  if (/\s/.test(email)) return { valid: false, message: 'Email tidak boleh mengandung spasi.' };
+  if (email.length > 254) return { valid: false, message: 'Email terlalu panjang (maksimal 254 karakter).' };
 
   var atCount = (email.match(/@/g) || []).length;
-  if (atCount === 0) {
-    return { valid: false, message: 'Email harus mengandung simbol @. Contoh: nama@contoh.com' };
-  }
-  if (atCount > 1) {
-    return { valid: false, message: 'Email hanya boleh mengandung satu simbol @.' };
-  }
+  if (atCount === 0) return { valid: false, message: 'Email harus mengandung simbol @. Contoh: nama@contoh.com' };
+  if (atCount > 1) return { valid: false, message: 'Email hanya boleh mengandung satu simbol @.' };
 
   var parts = email.split('@');
   var local = parts[0];
@@ -340,9 +323,7 @@ function validateEmailDetailed(email) {
   if (!local) return { valid: false, message: 'Bagian nama pengguna (sebelum @) tidak boleh kosong.' };
   if (!domain) return { valid: false, message: 'Bagian domain (setelah @) tidak boleh kosong. Contoh: nama@gmail.com' };
 
-  if (local.length > 64) {
-    return { valid: false, message: 'Bagian nama pengguna (sebelum @) terlalu panjang (maksimal 64 karakter).' };
-  }
+  if (local.length > 64) return { valid: false, message: 'Bagian nama pengguna (sebelum @) terlalu panjang (maksimal 64 karakter).' };
   if (!/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(local)) {
     return { valid: false, message: 'Nama pengguna hanya boleh berisi huruf, angka, titik, dan simbol umum.' };
   }
@@ -353,9 +334,7 @@ function validateEmailDetailed(email) {
     return { valid: false, message: 'Nama pengguna tidak boleh mengandung dua titik berurutan (..).' };
   }
 
-  if (domain.indexOf('.') === -1) {
-    return { valid: false, message: 'Domain harus mengandung titik. Contoh: nama@gmail.com' };
-  }
+  if (domain.indexOf('.') === -1) return { valid: false, message: 'Domain harus mengandung titik. Contoh: nama@gmail.com' };
   if (domain.charAt(0) === '.' || domain.charAt(domain.length - 1) === '.') {
     return { valid: false, message: 'Domain tidak boleh diawali atau diakhiri dengan titik.' };
   }
@@ -367,12 +346,8 @@ function validateEmailDetailed(email) {
   }
 
   var tld = domain.split('.').pop();
-  if (tld.length < 2) {
-    return { valid: false, message: 'Ekstensi domain terlalu pendek (minimal 2 huruf). Contoh: .com, .id' };
-  }
-  if (!/^[a-zA-Z]+$/.test(tld)) {
-    return { valid: false, message: 'Ekstensi domain hanya boleh berisi huruf (contoh: .com, .id, .net).' };
-  }
+  if (tld.length < 2) return { valid: false, message: 'Ekstensi domain terlalu pendek (minimal 2 huruf). Contoh: .com, .id' };
+  if (!/^[a-zA-Z]+$/.test(tld)) return { valid: false, message: 'Ekstensi domain hanya boleh berisi huruf (contoh: .com, .id, .net).' };
 
   var domainLower = domain.toLowerCase();
   var typoMap = {
@@ -393,7 +368,75 @@ function validateEmailDetailed(email) {
 
 
 /* =========================================================
-   11. INPUT MASK WHATSAPP
+   11. STATE CAPTCHA PER FORM (REAL-TIME)
+   ========================================================= */
+var captchaState = {
+  email:     { verified: false, verifying: false, errorMessage: '' },
+  wa:        { verified: false, verifying: false, errorMessage: '' },
+  kuesioner: { verified: false, verifying: false, errorMessage: '' }
+};
+
+// Callback sukses dari hCaptcha — dipanggil otomatis saat user selesai
+window.onCaptchaEmailSuccess     = function (token) { handleCaptchaSuccess('email', token); };
+window.onCaptchaWaSuccess        = function (token) { handleCaptchaSuccess('wa', token); };
+window.onCaptchaKuesionerSuccess = function (token) { handleCaptchaSuccess('kuesioner', token); };
+
+// Callback expired dari hCaptcha — reset state
+window.onCaptchaEmailExpired     = function () { handleCaptchaExpired('email'); };
+window.onCaptchaWaExpired        = function () { handleCaptchaExpired('wa'); };
+window.onCaptchaKuesionerExpired = function () { handleCaptchaExpired('kuesioner'); };
+
+async function handleCaptchaSuccess(prefix, token) {
+  var state = captchaState[prefix];
+  if (!state) return;
+  if (state.verifying) return; // Hindari double-verify
+
+  state.verifying = true;
+  state.verified = false;
+  state.errorMessage = '';
+
+  var captchaError = document.getElementById('captcha-error-' + (prefix === 'kuesioner' ? '' : prefix)) ||
+                     document.getElementById('captcha-error');
+
+  // Sesuaikan ID — kuesioner pakai captcha-error, yang lain pakai captcha-error-{prefix}
+  if (prefix === 'kuesioner') {
+    captchaError = document.getElementById('captcha-error');
+  } else {
+    captchaError = document.getElementById('captcha-error-' + prefix);
+  }
+
+  if (captchaError) captchaError.textContent = 'Memverifikasi captcha...';
+
+  var result = await verifyTokenOnServer(token);
+
+  state.verifying = false;
+
+  if (result.success) {
+    state.verified = true;
+    state.errorMessage = '';
+    if (captchaError) captchaError.textContent = ''; // Sukses → bersihkan
+  } else {
+    state.verified = false;
+    state.errorMessage = result.message;
+    if (captchaError) captchaError.textContent = result.message;
+    if (window.hcaptcha) {
+      try { window.hcaptcha.reset(); } catch (e) {}
+    }
+  }
+}
+
+function handleCaptchaExpired(prefix) {
+  var state = captchaState[prefix];
+  if (!state) return;
+  state.verified = false;
+  state.verifying = false;
+  state.errorMessage = '';
+  // Silent: tidak tampilkan error, biarkan submit yang memicu
+}
+
+
+/* =========================================================
+   12. INPUT MASK WHATSAPP
    ========================================================= */
 (function initWhatsAppMask() {
   if (typeof jQuery === 'undefined' || typeof jQuery.fn.mask === 'undefined') return;
@@ -405,7 +448,7 @@ function validateEmailDetailed(email) {
 
 
 /* =========================================================
-   12. FORM KONTAK (EMAIL & WHATSAPP)
+   13. FORM KONTAK (EMAIL & WHATSAPP)
    ========================================================= */
 (function initContactForms() {
   var GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLkE2nFTCu87gYniSIsPQNUtq0CamRq-ZP8CnIaedvELdG0eELvCN3O5ClwU5uEw4P/exec";
@@ -423,7 +466,6 @@ function validateEmailDetailed(email) {
     var statusEl = document.getElementById('form-status-' + prefix);
     var submitBtn = document.getElementById('submit-btn-' + prefix);
 
-    // Flag: validasi real-time hanya aktif SETELAH submit pertama
     var hasSubmitted = false;
 
     function showError(input, message) {
@@ -437,7 +479,6 @@ function validateEmailDetailed(email) {
       input.classList.remove('invalid');
     }
 
-    // Validator per-field. Mengembalikan true jika valid.
     function validateField(input) {
       if (!input) return true;
       var result;
@@ -445,11 +486,8 @@ function validateEmailDetailed(email) {
       if (input === nameInput) {
         result = validateName(input.value, 'Nama lengkap');
       } else if (input === emailOrWaInput) {
-        if (prefix === 'email') {
-          result = validateEmailDetailed(input.value);
-        } else {
-          result = validateWhatsAppNumber(input.value);
-        }
+        if (prefix === 'email') result = validateEmailDetailed(input.value);
+        else result = validateWhatsAppNumber(input.value);
       } else if (input === messageInput) {
         result = validateText(input.value, 'Pesan', 10);
       } else {
@@ -462,9 +500,7 @@ function validateEmailDetailed(email) {
       return result.valid;
     }
 
-    // ---------------------------------------------------
-    // Real-time listener — TAPI hanya aktif setelah submit
-    // ---------------------------------------------------
+    // Real-time listener — hanya aktif setelah submit pertama
     [nameInput, emailOrWaInput, messageInput].forEach(function (input) {
       if (!input) return;
       input.addEventListener('input', function () {
@@ -482,9 +518,6 @@ function validateEmailDetailed(email) {
       });
     }
 
-    // ---------------------------------------------------
-    // Submit handler
-    // ---------------------------------------------------
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
       hasSubmitted = true;
@@ -496,15 +529,16 @@ function validateEmailDetailed(email) {
       if (!validateField(emailOrWaInput)) valid = false;
       if (!validateField(messageInput)) valid = false;
 
-      // B. Validasi checkbox persetujuan
+      // B. Validasi checkbox
       if (agreeCheckbox && !agreeCheckbox.checked) {
         var agreeErr = document.getElementById(agreeCheckbox.id + '-error');
         if (agreeErr) agreeErr.textContent = 'Anda harus menyetujui syarat dan ketentuan.';
         valid = false;
       }
 
-      // C. Validasi & Verifikasi hCaptcha
+      // C. Validasi Captcha — cek state real-time
       if (!BYPASS_CAPTCHA) {
+        var state = captchaState[prefix];
         var captchaResponse = form.querySelector('[name="h-captcha-response"]');
         var captchaError = document.getElementById('captcha-error-' + prefix);
 
@@ -514,24 +548,22 @@ function validateEmailDetailed(email) {
         } else if (!captchaResponse || !captchaResponse.value) {
           if (captchaError) captchaError.textContent = 'Silakan selesaikan verifikasi captcha terlebih dahulu.';
           valid = false;
-        } else {
-          if (captchaError) captchaError.textContent = 'Memverifikasi captcha...';
-          if (submitBtn) submitBtn.disabled = true;
-
-          var result = await verifyTokenOnServer(captchaResponse.value);
-
-          if (!result.success) {
-            if (captchaError) captchaError.textContent = result.message;
-            if (window.hcaptcha) window.hcaptcha.reset();
-            if (submitBtn) submitBtn.disabled = false;
-            valid = false;
-          } else if (captchaError) {
-            captchaError.textContent = '';
+        } else if (state.verifying) {
+          if (captchaError) captchaError.textContent = 'Captcha masih dalam proses verifikasi. Mohon tunggu sebentar...';
+          valid = false;
+        } else if (!state.verified) {
+          // Token ada tapi belum terverifikasi (gagal sebelumnya / expired)
+          if (captchaError) {
+            captchaError.textContent = state.errorMessage || 'Captcha belum terverifikasi. Silakan selesaikan ulang.';
           }
+          if (window.hcaptcha) {
+            try { window.hcaptcha.reset(); } catch (err) {}
+          }
+          valid = false;
         }
+        // Jika state.verified === true → lolos tanpa verifikasi ulang ✅
       }
 
-      // Jika ada error, scroll ke field pertama yang invalid
       if (!valid) {
         var firstInvalid = form.querySelector('.invalid');
         if (firstInvalid) {
@@ -542,7 +574,6 @@ function validateEmailDetailed(email) {
       }
 
       // D. Kirim form
-      // D.1 EMAIL
       if (prefix === 'email') {
         try {
           if (submitBtn) submitBtn.disabled = true;
@@ -563,6 +594,7 @@ function validateEmailDetailed(email) {
           if (res.ok) {
             form.reset();
             hasSubmitted = false;
+            captchaState[prefix] = { verified: false, verifying: false, errorMessage: '' };
             if (window.hcaptcha) window.hcaptcha.reset();
             statusEl.textContent = '';
             if (submitBtn) submitBtn.disabled = false;
@@ -580,7 +612,6 @@ function validateEmailDetailed(email) {
         }
       }
 
-      // D.2 WHATSAPP
       if (prefix === 'wa') {
         var waLink = "https://web.whatsapp.com/send";
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -600,6 +631,7 @@ function validateEmailDetailed(email) {
         window.open(finalWaLink, '_blank');
         form.reset();
         hasSubmitted = false;
+        captchaState[prefix] = { verified: false, verifying: false, errorMessage: '' };
         if (window.hcaptcha) window.hcaptcha.reset();
         showSuccessOverlay(
           'Membuka WhatsApp!',
@@ -615,7 +647,7 @@ function validateEmailDetailed(email) {
 
 
 /* =========================================================
-   13. FORM KUESIONER
+   14. FORM KUESIONER
    ========================================================= */
 (function initKuesionerForm() {
   var form = document.getElementById('kuesioner-form');
@@ -634,7 +666,6 @@ function validateEmailDetailed(email) {
 
   var statusEl = document.getElementById('form-status');
   var submitBtn = document.getElementById('submit-btn');
-
   var hasSubmitted = false;
 
   function showError(input, message) {
@@ -648,29 +679,19 @@ function validateEmailDetailed(email) {
     input.classList.remove('invalid');
   }
 
-  // Validator per-field
   function validateField(key) {
     var input = fields[key];
     if (!input) return true;
     var result;
 
-    if (key === 'nama') {
-      result = validateName(input.value, 'Nama lengkap');
-    } else if (key === 'kelas') {
-      result = validateText(input.value, 'Kelas');
-    } else if (key === 'instansi') {
-      result = validateText(input.value, 'Instansi');
-    } else if (key === 'noWhatsapp') {
-      result = validateWhatsAppNumber(input.value);
-    } else if (key === 'kesan') {
-      result = validateText(input.value, 'Kesan', 5);
-    } else if (key === 'kritik') {
-      result = validateText(input.value, 'Kritik', 5);
-    } else if (key === 'saran') {
-      result = validateText(input.value, 'Saran', 5);
-    } else {
-      return true;
-    }
+    if (key === 'nama') result = validateName(input.value, 'Nama lengkap');
+    else if (key === 'kelas') result = validateText(input.value, 'Kelas');
+    else if (key === 'instansi') result = validateText(input.value, 'Instansi');
+    else if (key === 'noWhatsapp') result = validateWhatsAppNumber(input.value);
+    else if (key === 'kesan') result = validateText(input.value, 'Kesan', 5);
+    else if (key === 'kritik') result = validateText(input.value, 'Kritik', 5);
+    else if (key === 'saran') result = validateText(input.value, 'Saran', 5);
+    else return true;
 
     if (result.valid) clearError(input);
     else showError(input, result.message);
@@ -678,7 +699,6 @@ function validateEmailDetailed(email) {
     return result.valid;
   }
 
-  // Real-time listener — hanya setelah submit
   Object.keys(fields).forEach(function (key) {
     if (key === 'agree') return;
     var input = fields[key];
@@ -704,13 +724,11 @@ function validateEmailDetailed(email) {
 
     var valid = true;
 
-    // A. Validasi semua field teks
     Object.keys(fields).forEach(function (key) {
       if (key === 'agree') return;
       if (!validateField(key)) valid = false;
     });
 
-    // B. Validasi checkbox
     var agreeError = document.getElementById('agree-error');
     if (!fields.agree.checked) {
       if (agreeError) agreeError.textContent = 'Anda harus menyetujui syarat dan ketentuan.';
@@ -719,8 +737,9 @@ function validateEmailDetailed(email) {
       agreeError.textContent = '';
     }
 
-    // C. hCaptcha
+    // Captcha — cek state
     if (!BYPASS_CAPTCHA) {
+      var state = captchaState.kuesioner;
       var captchaResponse = form.querySelector('[name="h-captcha-response"]');
       var captchaError = document.getElementById('captcha-error');
 
@@ -730,24 +749,20 @@ function validateEmailDetailed(email) {
       } else if (!captchaResponse || !captchaResponse.value) {
         if (captchaError) captchaError.textContent = 'Silakan selesaikan verifikasi captcha terlebih dahulu.';
         valid = false;
-      } else {
-        if (captchaError) captchaError.textContent = 'Memverifikasi captcha...';
-        if (submitBtn) submitBtn.disabled = true;
-
-        var result = await verifyTokenOnServer(captchaResponse.value);
-
-        if (!result.success) {
-          if (captchaError) captchaError.textContent = result.message;
-          if (window.hcaptcha) window.hcaptcha.reset();
-          if (submitBtn) submitBtn.disabled = false;
-          valid = false;
-        } else if (captchaError) {
-          captchaError.textContent = '';
+      } else if (state.verifying) {
+        if (captchaError) captchaError.textContent = 'Captcha masih dalam proses verifikasi. Mohon tunggu sebentar...';
+        valid = false;
+      } else if (!state.verified) {
+        if (captchaError) {
+          captchaError.textContent = state.errorMessage || 'Captcha belum terverifikasi. Silakan selesaikan ulang.';
         }
+        if (window.hcaptcha) {
+          try { window.hcaptcha.reset(); } catch (err) {}
+        }
+        valid = false;
       }
     }
 
-    // Scroll ke field invalid pertama
     if (!valid) {
       var firstInvalid = form.querySelector('.invalid');
       if (firstInvalid) {
@@ -757,7 +772,6 @@ function validateEmailDetailed(email) {
       return;
     }
 
-    // D. Kirim data
     var payload = {
       nama: fields.nama.value,
       kelas: fields.kelas.value,
@@ -784,6 +798,7 @@ function validateEmailDetailed(email) {
       if (res.ok) {
         form.reset();
         hasSubmitted = false;
+        captchaState.kuesioner = { verified: false, verifying: false, errorMessage: '' };
         if (window.hcaptcha) window.hcaptcha.reset();
         statusEl.textContent = '';
         if (submitBtn) submitBtn.disabled = false;
