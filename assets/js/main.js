@@ -9,7 +9,7 @@
    - Endpoint Vercel untuk memverifikasi token hCaptcha
    ========================================================= */
 var BYPASS_CAPTCHA = false;
-var API_VERIFY_URL = 'https://irma-api.vercel.app/api/verify';
+var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 
 /* =========================================================
