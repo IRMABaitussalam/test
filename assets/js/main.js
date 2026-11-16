@@ -261,14 +261,35 @@ async function verifyTokenOnServer(token) {
       body: JSON.stringify({ token: token }),
     });
 
+    if (!response.ok) {
+      return { success: false, message: 'Server verifikasi sedang bermasalah. Coba lagi nanti.' };
+    }
+
     var result = await response.json();
-    return result.success === true;
+
+    if (result.success === true) {
+      return { success: true };
+    }
+
+    var errors = result.errors || [];
+
+    if (errors.indexOf('invalid-input-response') !== -1 ||
+        errors.indexOf('expired-input-response') !== -1 ||
+        errors.indexOf('timeout-or-duplicate') !== -1) {
+      return { success: false, message: 'Captcha sudah kadaluarsa. Silakan selesaikan ulang.' };
+    }
+
+    if (errors.indexOf('invalid-input-secret') !== -1 ||
+        errors.indexOf('missing-input-secret') !== -1) {
+      return { success: false, message: 'Konfigurasi server salah. Hubungi admin.' };
+    }
+
+    return { success: false, message: 'Verifikasi captcha gagal. Silakan coba lagi.' };
   } catch (error) {
     console.error('Error verifying hCaptcha token:', error);
-    return false;
+    return { success: false, message: 'Koneksi terganggu. Periksa jaringan internet Anda.' };
   }
 }
-
 
 /* =========================================================
    10. FORM KONTAK (EMAIL & WHATSAPP)
@@ -352,22 +373,25 @@ async function verifyTokenOnServer(token) {
         var captchaResponse = form.querySelector('[name="h-captcha-response"]');
         var captchaError = document.getElementById('captcha-error-' + prefix);
 
-        if (!captchaResponse || !captchaResponse.value) {
-          if (captchaError) captchaError.textContent = 'Silakan selesaikan verifikasi captcha.';
+        if (typeof window.hcaptcha === 'undefined') {
+          if (captchaError) captchaError.textContent = 'Captcha gagal dimuat. Refresh halaman lalu coba lagi.';
+          valid = false;
+        } else if (!captchaResponse || !captchaResponse.value) {
+          if (captchaError) captchaError.textContent = 'Silakan selesaikan verifikasi captcha terlebih dahulu.';
           valid = false;
         } else {
           if (captchaError) captchaError.textContent = 'Memverifikasi captcha...';
           if (submitBtn) submitBtn.disabled = true;
 
-          var isVerified = await verifyTokenOnServer(captchaResponse.value);
+          var result = await verifyTokenOnServer(captchaResponse.value);
 
-          if (!isVerified) {
-            if (captchaError) captchaError.textContent = 'Verifikasi captcha gagal. Silakan coba lagi.';
+          if (!result.success) {
+            if (captchaError) captchaError.textContent = result.message;
             if (window.hcaptcha) window.hcaptcha.reset();
             if (submitBtn) submitBtn.disabled = false;
             valid = false;
-          } else if (captchaError) {
-            captchaError.textContent = '';
+          } else {
+            if (captchaError) captchaError.textContent = '';
           }
         }
       }
@@ -529,22 +553,25 @@ async function verifyTokenOnServer(token) {
       var captchaResponse = form.querySelector('[name="h-captcha-response"]');
       var captchaError = document.getElementById('captcha-error');
 
-      if (!captchaResponse || !captchaResponse.value) {
-        if (captchaError) captchaError.textContent = 'Silakan selesaikan verifikasi captcha.';
+      if (typeof window.hcaptcha === 'undefined') {
+        if (captchaError) captchaError.textContent = 'Captcha gagal dimuat. Refresh halaman lalu coba lagi.';
+        valid = false;
+      } else if (!captchaResponse || !captchaResponse.value) {
+        if (captchaError) captchaError.textContent = 'Silakan selesaikan verifikasi captcha terlebih dahulu.';
         valid = false;
       } else {
         if (captchaError) captchaError.textContent = 'Memverifikasi captcha...';
         if (submitBtn) submitBtn.disabled = true;
 
-        var isVerified = await verifyTokenOnServer(captchaResponse.value);
+        var result = await verifyTokenOnServer(captchaResponse.value);
 
-        if (!isVerified) {
-          if (captchaError) captchaError.textContent = 'Verifikasi captcha gagal. Silakan coba lagi.';
+        if (!result.success) {
+          if (captchaError) captchaError.textContent = result.message;
           if (window.hcaptcha) window.hcaptcha.reset();
           if (submitBtn) submitBtn.disabled = false;
           valid = false;
-        } else if (captchaError) {
-          captchaError.textContent = '';
+        } else {
+          if (captchaError) captchaError.textContent = '';
         }
       }
     }
