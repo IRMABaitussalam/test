@@ -84,10 +84,10 @@
 
     <div class="form-group">
       <label><i class="fa-solid fa-shield-halved"></i> Verifikasi <span class="required">*</span></label>
-<div class="h-captcha"
-     data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"
-     data-callback="onCaptchaKuesionerSuccess"
-     data-expired-callback="onCaptchaKuesionerExpired"></div>
+      <div class="h-captcha"
+           data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"
+           data-callback="onCaptchaKuesionerSuccess"
+           data-expired-callback="onCaptchaKuesionerExpired"></div>
       <span class="error-message" id="captcha-error"></span>
     </div>
 
@@ -104,5 +104,22 @@
     </button>
     <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
   </form>
+
+  <!-- =========================================
+       OVERLAY SUKSES (FULL SCREEN)
+       ========================================= -->
+  <div id="success-overlay" class="success-overlay" aria-hidden="true">
+    <div class="success-content">
+      <button class="success-close" id="close-success" aria-label="Tutup">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="success-icon">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h2>Kuesioner Terkirim!</h2>
+      <p id="success-message">Terima kasih telah mengisi kuesioner ini. Masukan Anda sangat berarti bagi kami.</p>
+    </div>
+  </div>
+
 </article>
 {{ end }}
