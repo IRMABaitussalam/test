@@ -30,7 +30,7 @@
 </style>
 
 {{ $css := resources.Get "css/style.css" | minify | fingerprint }}
-<link rel="stylesheet" href="{{ $css.Permalink }}" integrity="{{ $css.Data.Integrity }}">
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 
 <!-- Terapkan tema + skip loader jika sudah tampil di sesi ini -->
 <script>
