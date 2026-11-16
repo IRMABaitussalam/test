@@ -120,18 +120,41 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
   var imgEl = box.querySelector('.lightbox-img');
   var capEl = box.querySelector('.lightbox-caption');
+  var dateEl = box.querySelector('.lightbox-date');
+  var counterEl = box.querySelector('.lightbox-counter');
   var btnClose = box.querySelector('.lightbox-close');
   var btnPrev = box.querySelector('.lightbox-prev');
   var btnNext = box.querySelector('.lightbox-next');
   var current = 0;
 
+  // Format tanggal ke bahasa Indonesia
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    var d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
   function show(index) {
     current = (index + items.length) % items.length;
     var item = items[current];
     var img = item.querySelector('img');
+
     imgEl.src = item.dataset.src || img.src;
     imgEl.alt = img.alt || '';
     capEl.textContent = item.dataset.caption || img.alt || '';
+
+    // Tanggal
+    var dateStr = item.dataset.date || '';
+    var formatted = formatDate(dateStr);
+    dateEl.textContent = formatted;
+    dateEl.style.display = formatted ? '' : 'none';
+
+    // Counter
+    counterEl.textContent = (current + 1) + ' / ' + items.length;
+
     box.classList.add('is-open');
     document.body.classList.add('no-scroll');
   }
@@ -157,7 +180,6 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
     if (e.key === 'ArrowRight') show(current + 1);
   });
 })();
-
 
 /* =========================================================
    6. TAB SWITCHER (EMAIL / WHATSAPP)

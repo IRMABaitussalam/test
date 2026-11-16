@@ -1038,3 +1038,114 @@ body.no-scroll { overflow: hidden; }
 .h-captcha iframe {
   transition: transform 0.2s ease;
 }
+/* =========================================================
+   LIGHTBOX — FIX Z-INDEX, COUNTER, TANGGAL
+   ========================================================= */
+
+/* Pastikan tombol selalu di atas gambar */
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  z-index: 20;
+}
+
+/* Pertegas background tombol agar terlihat di atas foto */
+.lightbox-prev,
+.lightbox-next {
+  background: rgba(5, 26, 18, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(212, 175, 55, 0.6);
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: var(--gold-500);
+  border-color: var(--gold-500);
+}
+
+/* Counter di pojok kiri atas */
+.lightbox-counter {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 20;
+  background: rgba(5, 26, 18, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--gold-300);
+  border: 1.5px solid rgba(212, 175, 55, 0.55);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-family: var(--font-body);
+}
+
+/* Info caption & tanggal */
+.lightbox-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  z-index: 10;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.lightbox-info .lightbox-caption {
+  margin: 0;
+  color: var(--gold-300);
+  font-family: var(--font-arabic);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.lightbox-info .lightbox-date {
+  margin: 0;
+  color: rgba(236, 253, 245, 0.65);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  font-family: var(--font-body);
+}
+
+/* Mobile — kecilkan gambar & tombol sedikit agar tidak tabrakan */
+@media (max-width: 640px) {
+  .lightbox-img {
+    max-width: 88vw;
+    max-height: 68vh;
+  }
+  .lightbox-prev {
+    left: 0.5rem;
+    width: 40px;
+    height: 40px;
+  }
+  .lightbox-next {
+    right: 0.5rem;
+    width: 40px;
+    height: 40px;
+  }
+  .lightbox-close {
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+  }
+  .lightbox-counter {
+    top: 1rem;
+    left: 1rem;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .lightbox-info {
+    margin-top: 0.75rem;
+  }
+  .lightbox-info .lightbox-caption {
+    font-size: 0.85rem;
+  }
+  .lightbox-info .lightbox-date {
+    font-size: 0.75rem;
+  }
+}
