@@ -177,7 +177,7 @@ button { font-family: inherit; }
 /* 1. Hapus z-index dari sini agar logo bisa tertutup overlay */
 .header-inner {
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: 0.85rem 0; 
+  padding: 0.85rem; 
 }
 
 /* 2. Logo dibiarkan tanpa z-index agar posisinya di bawah overlay */
@@ -544,7 +544,6 @@ body.no-scroll { overflow: hidden; }
 .site-footer { margin-top: 2rem; padding: 2rem 0 2.5rem; border-top: 1px solid var(--border); background: var(--bg-alt); color: var(--text-muted); font-size: 0.88rem; text-align: center; }
 .footer-inner { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; }
 .footer-brand { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text); }
-.footer-star { display: inline-flex; color: var(--gold); }
 .footer-arabic { font-family: var(--font-arabic); color: var(--gold); font-size: 1.05rem; opacity: 0.85; }
 .footer-copy { font-size: 0.8rem; color: var(--text-soft); }
 
