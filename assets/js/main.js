@@ -103,7 +103,6 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
     function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          // Paksa browser flush layout dulu baru trigger animasi
           void entry.target.offsetHeight;
           entry.target.classList.add('is-visible');
           observer.unobserve(entry.target);
@@ -250,8 +249,7 @@ document.addEventListener('click', function (e) {
 
 
 /* =========================================================
-   9. FUNGSI VERIFIKASI HCAPTCHA (SERVER-SIDE)
-   Mengirim token ke Vercel untuk diverifikasi
+   9. VERIFIKASI HCAPTCHA (SERVER-SIDE)
    ========================================================= */
 async function verifyTokenOnServer(token) {
   try {
@@ -291,8 +289,136 @@ async function verifyTokenOnServer(token) {
   }
 }
 
+
 /* =========================================================
-   10. FORM KONTAK (EMAIL & WHATSAPP)
+   10. VALIDATOR EMAIL — PESAN SPESIFIK PER KASUS
+   Mengembalikan { valid: boolean, message: string }
+   ========================================================= */
+function validateEmailDetailed(email) {
+  // 1. Kosong
+  if (!email || email.trim() === '') {
+    return { valid: false, message: 'Email wajib diisi.' };
+  }
+
+  email = email.trim();
+
+  // 2. Ada spasi
+  if (/\s/.test(email)) {
+    return { valid: false, message: 'Email tidak boleh mengandung spasi.' };
+  }
+
+  // 3. Terlalu panjang (RFC 5321)
+  if (email.length > 254) {
+    return { valid: false, message: 'Email terlalu panjang (maksimal 254 karakter).' };
+  }
+
+  // 4. Jumlah simbol @
+  var atCount = (email.match(/@/g) || []).length;
+  if (atCount === 0) {
+    return { valid: false, message: 'Email harus mengandung simbol @. Contoh: nama@contoh.com' };
+  }
+  if (atCount > 1) {
+    return { valid: false, message: 'Email hanya boleh mengandung satu simbol @.' };
+  }
+
+  // 5. Pisahkan local part & domain
+  var parts = email.split('@');
+  var local = parts[0];
+  var domain = parts[1];
+
+  if (!local) {
+    return { valid: false, message: 'Bagian nama pengguna (sebelum @) tidak boleh kosong.' };
+  }
+  if (!domain) {
+    return { valid: false, message: 'Bagian domain (setelah @) tidak boleh kosong. Contoh: nama@gmail.com' };
+  }
+
+  // 6. Local part
+  if (local.length > 64) {
+    return { valid: false, message: 'Bagian nama pengguna (sebelum @) terlalu panjang (maksimal 64 karakter).' };
+  }
+  if (!/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(local)) {
+    return { valid: false, message: 'Nama pengguna hanya boleh berisi huruf, angka, titik, dan beberapa simbol (!#$%&\'*+/=?^_`{|}~-).' };
+  }
+  if (local.charAt(0) === '.' || local.charAt(local.length - 1) === '.') {
+    return { valid: false, message: 'Nama pengguna tidak boleh diawali atau diakhiri dengan titik.' };
+  }
+  if (local.indexOf('..') !== -1) {
+    return { valid: false, message: 'Nama pengguna tidak boleh mengandung dua titik berurutan (..).' };
+  }
+
+  // 7. Domain
+  if (domain.indexOf('.') === -1) {
+    return { valid: false, message: 'Domain harus mengandung titik. Contoh: nama@gmail.com' };
+  }
+  if (domain.charAt(0) === '.' || domain.charAt(domain.length - 1) === '.') {
+    return { valid: false, message: 'Domain tidak boleh diawali atau diakhiri dengan titik.' };
+  }
+  if (domain.indexOf('..') !== -1) {
+    return { valid: false, message: 'Domain tidak boleh mengandung dua titik berurutan (..).' };
+  }
+  if (domain.charAt(0) === '-' || domain.charAt(domain.length - 1) === '-') {
+    return { valid: false, message: 'Domain tidak boleh diawali atau diakhiri dengan tanda minus.' };
+  }
+
+  // 8. TLD (ekstensi setelah titik terakhir)
+  var tld = domain.split('.').pop();
+  if (tld.length < 2) {
+    return { valid: false, message: 'Ekstensi domain terlalu pendek (minimal 2 huruf). Contoh: .com, .id' };
+  }
+  if (!/^[a-zA-Z]+$/.test(tld)) {
+    return { valid: false, message: 'Ekstensi domain hanya boleh berisi huruf (contoh: .com, .id, .net).' };
+  }
+
+  // 9. Deteksi typo domain umum
+  var domainLower = domain.toLowerCase();
+  var typoMap = {
+    'gmail.co':   'gmail.com',
+    'gmail.cm':   'gmail.com',
+    'gmail.con':  'gmail.com',
+    'gmial.com':  'gmail.com',
+    'gmai.com':   'gmail.com',
+    'gmil.com':   'gmail.com',
+    'gmail.comm': 'gmail.com',
+    'yahoo.co':   'yahoo.com',
+    'yahoo.con':  'yahoo.com',
+    'yaho.com':   'yahoo.com',
+    'yahooo.com': 'yahoo.com',
+    'hotmai.com': 'hotmail.com',
+    'hotmal.com': 'hotmail.com',
+    'hotmail.co': 'hotmail.com',
+    'outlok.com': 'outlook.com',
+    'outloo.com': 'outlook.com',
+    'outlook.co': 'outlook.com',
+  };
+
+  if (typoMap[domainLower]) {
+    return {
+      valid: false,
+      message: 'Sepertinya ada salah ketik. Maksud Anda @' + typoMap[domainLower] + '?'
+    };
+  }
+
+  return { valid: true, message: '' };
+}
+
+
+/* =========================================================
+   11. INPUT MASK UNTUK NOMOR WHATSAPP
+   Menggunakan jQuery Mask Plugin (dimuat dari head.html)
+   ========================================================= */
+(function initWhatsAppMask() {
+  if (typeof jQuery === 'undefined' || typeof jQuery.fn.mask === 'undefined') return;
+
+  var $waInput = jQuery('#no-whatsapp');
+  if ($waInput.length) {
+    $waInput.mask('+62 899-9999-99999', { placeholder: '+62 8xx-xxxx-xxxx' });
+  }
+})();
+
+
+/* =========================================================
+   12. FORM KONTAK (EMAIL & WHATSAPP)
    ========================================================= */
 (function initContactForms() {
   var GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLkE2nFTCu87gYniSIsPQNUtq0CamRq-ZP8CnIaedvELdG0eELvCN3O5ClwU5uEw4P/exec";
@@ -321,8 +447,10 @@ async function verifyTokenOnServer(token) {
       input.classList.remove('invalid');
     }
 
-    // Validasi saat blur & input
-    [nameInput, emailOrWaInput, messageInput].forEach(function (input) {
+    // ------------------------------------------------
+    // Validasi saat blur & input — NAMA & PESAN (umum)
+    // ------------------------------------------------
+    [nameInput, messageInput].forEach(function (input) {
       if (!input) return;
       input.addEventListener('blur', function () {
         if (!input.checkValidity()) showError(input, input.validationMessage);
@@ -333,6 +461,39 @@ async function verifyTokenOnServer(token) {
       });
     });
 
+    // ------------------------------------------------
+    // Validasi EMAIL (khusus form email) — pakai validator detail
+    // ------------------------------------------------
+    if (prefix === 'email' && emailOrWaInput) {
+      emailOrWaInput.addEventListener('blur', function () {
+        var check = validateEmailDetailed(this.value);
+        if (!check.valid) showError(this, check.message);
+        else clearError(this);
+      });
+      emailOrWaInput.addEventListener('input', function () {
+        if (this.value === '') { clearError(this); return; }
+        var check = validateEmailDetailed(this.value);
+        if (!check.valid) showError(this, check.message);
+        else clearError(this);
+      });
+    }
+
+    // ------------------------------------------------
+    // Validasi WHATSAPP (khusus form WA) — pakai checkValidity standar
+    // ------------------------------------------------
+    if (prefix === 'wa' && emailOrWaInput) {
+      emailOrWaInput.addEventListener('blur', function () {
+        if (!this.checkValidity()) showError(this, this.validationMessage);
+        else clearError(this);
+      });
+      emailOrWaInput.addEventListener('input', function () {
+        if (this.checkValidity()) clearError(this);
+      });
+    }
+
+    // ------------------------------------------------
+    // Checkbox persetujuan
+    // ------------------------------------------------
     if (agreeCheckbox) {
       agreeCheckbox.addEventListener('change', function () {
         var err = document.getElementById(agreeCheckbox.id + '-error');
@@ -340,14 +501,15 @@ async function verifyTokenOnServer(token) {
       });
     }
 
+    // ------------------------------------------------
+    // Submit handler
+    // ------------------------------------------------
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
       var valid = true;
 
-      // ------------------------------------------------
-      // A. Validasi field teks
-      // ------------------------------------------------
-      [nameInput, emailOrWaInput, messageInput].forEach(function (input) {
+      // A. Validasi field teks umum (nama & pesan)
+      [nameInput, messageInput].forEach(function (input) {
         if (!input) return;
         if (!input.checkValidity()) {
           showError(input, input.validationMessage);
@@ -357,18 +519,34 @@ async function verifyTokenOnServer(token) {
         }
       });
 
-      // ------------------------------------------------
+      // A.2 Validasi email / WA (spesifik per tipe form)
+      if (emailOrWaInput) {
+        if (prefix === 'email') {
+          var emailCheck = validateEmailDetailed(emailOrWaInput.value);
+          if (!emailCheck.valid) {
+            showError(emailOrWaInput, emailCheck.message);
+            valid = false;
+          } else {
+            clearError(emailOrWaInput);
+          }
+        } else {
+          if (!emailOrWaInput.checkValidity()) {
+            showError(emailOrWaInput, emailOrWaInput.validationMessage);
+            valid = false;
+          } else {
+            clearError(emailOrWaInput);
+          }
+        }
+      }
+
       // B. Validasi checkbox persetujuan
-      // ------------------------------------------------
       if (agreeCheckbox && !agreeCheckbox.checked) {
         var agreeErr = document.getElementById(agreeCheckbox.id + '-error');
         if (agreeErr) agreeErr.textContent = 'Anda harus menyetujui syarat dan ketentuan.';
         valid = false;
       }
 
-      // ------------------------------------------------
       // C. Validasi & Verifikasi hCaptcha
-      // ------------------------------------------------
       if (!BYPASS_CAPTCHA) {
         var captchaResponse = form.querySelector('[name="h-captcha-response"]');
         var captchaError = document.getElementById('captcha-error-' + prefix);
@@ -398,10 +576,7 @@ async function verifyTokenOnServer(token) {
 
       if (!valid) return;
 
-      // ------------------------------------------------
       // D. Kirim form berdasarkan tipe
-      // ------------------------------------------------
-
       // D.1 EMAIL — kirim ke Google Apps Script
       if (prefix === 'email') {
         try {
@@ -473,7 +648,7 @@ async function verifyTokenOnServer(token) {
 
 
 /* =========================================================
-   11. FORM KUESIONER
+   13. FORM KUESIONER
    ========================================================= */
 (function initKuesionerForm() {
   var form = document.getElementById('kuesioner-form');
@@ -521,9 +696,7 @@ async function verifyTokenOnServer(token) {
     e.preventDefault();
     var valid = true;
 
-    // ------------------------------------------------
     // A. Validasi field teks
-    // ------------------------------------------------
     [fields.nama, fields.kelas, fields.instansi, fields.noWhatsapp,
      fields.kesan, fields.kritik, fields.saran].forEach(function (input) {
       if (!input) return;
@@ -535,9 +708,7 @@ async function verifyTokenOnServer(token) {
       }
     });
 
-    // ------------------------------------------------
     // B. Validasi checkbox persetujuan
-    // ------------------------------------------------
     var agreeError = document.getElementById('agree-error');
     if (!fields.agree.checked) {
       if (agreeError) agreeError.textContent = 'Anda harus menyetujui syarat dan ketentuan.';
@@ -546,9 +717,7 @@ async function verifyTokenOnServer(token) {
       agreeError.textContent = '';
     }
 
-    // ------------------------------------------------
     // C. Validasi & Verifikasi hCaptcha
-    // ------------------------------------------------
     if (!BYPASS_CAPTCHA) {
       var captchaResponse = form.querySelector('[name="h-captcha-response"]');
       var captchaError = document.getElementById('captcha-error');
@@ -578,9 +747,7 @@ async function verifyTokenOnServer(token) {
 
     if (!valid) return;
 
-    // ------------------------------------------------
     // D. Kirim data kuesioner ke endpoint backend
-    // ------------------------------------------------
     var payload = {
       nama: fields.nama.value,
       kelas: fields.kelas.value,
