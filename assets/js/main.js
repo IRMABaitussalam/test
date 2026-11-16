@@ -431,7 +431,6 @@ function handleCaptchaExpired(prefix) {
   state.verified = false;
   state.verifying = false;
   state.errorMessage = '';
-  // Silent: tidak tampilkan error, biarkan submit yang memicu
 }
 
 
@@ -524,19 +523,16 @@ function handleCaptchaExpired(prefix) {
 
       var valid = true;
 
-      // A. Validasi field teks
       if (!validateField(nameInput)) valid = false;
       if (!validateField(emailOrWaInput)) valid = false;
       if (!validateField(messageInput)) valid = false;
 
-      // B. Validasi checkbox
       if (agreeCheckbox && !agreeCheckbox.checked) {
         var agreeErr = document.getElementById(agreeCheckbox.id + '-error');
         if (agreeErr) agreeErr.textContent = 'Anda harus menyetujui syarat dan ketentuan.';
         valid = false;
       }
 
-      // C. Validasi Captcha — cek state real-time
       if (!BYPASS_CAPTCHA) {
         var state = captchaState[prefix];
         var captchaResponse = form.querySelector('[name="h-captcha-response"]');
@@ -552,7 +548,6 @@ function handleCaptchaExpired(prefix) {
           if (captchaError) captchaError.textContent = 'Captcha masih dalam proses verifikasi. Mohon tunggu sebentar...';
           valid = false;
         } else if (!state.verified) {
-          // Token ada tapi belum terverifikasi (gagal sebelumnya / expired)
           if (captchaError) {
             captchaError.textContent = state.errorMessage || 'Captcha belum terverifikasi. Silakan selesaikan ulang.';
           }
@@ -561,7 +556,6 @@ function handleCaptchaExpired(prefix) {
           }
           valid = false;
         }
-        // Jika state.verified === true → lolos tanpa verifikasi ulang ✅
       }
 
       if (!valid) {
@@ -573,7 +567,6 @@ function handleCaptchaExpired(prefix) {
         return;
       }
 
-      // D. Kirim form
       if (prefix === 'email') {
         try {
           if (submitBtn) submitBtn.disabled = true;
@@ -652,6 +645,8 @@ function handleCaptchaExpired(prefix) {
 (function initKuesionerForm() {
   var form = document.getElementById('kuesioner-form');
   if (!form) return;
+
+  var KUESIONER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQEdAkCkhAkG49kzJo36mdy3Hr4pQNTufEJoqibgqWpqYkGM_byo8zz1lKKXpP61I/exec";
 
   var fields = {
     nama: document.getElementById('nama'),
@@ -737,7 +732,6 @@ function handleCaptchaExpired(prefix) {
       agreeError.textContent = '';
     }
 
-    // Captcha — cek state
     if (!BYPASS_CAPTCHA) {
       var state = captchaState.kuesioner;
       var captchaResponse = form.querySelector('[name="h-captcha-response"]');
@@ -772,28 +766,26 @@ function handleCaptchaExpired(prefix) {
       return;
     }
 
-    var payload = {
-      nama: fields.nama.value,
-      kelas: fields.kelas.value,
-      instansi: fields.instansi.value,
-      'no-whatsapp': fields.noWhatsapp.value,
-      kesan: fields.kesan.value,
-      kritik: fields.kritik.value,
-      saran: fields.saran.value,
-      'h-captcha-response': BYPASS_CAPTCHA
-        ? 'BYPASS_TOKEN'
-        : (captchaResponse ? captchaResponse.value : ''),
-    };
+    // --- BAGIAN YANG DIUBAH: Menggunakan URLSearchParams dan URL GAS Baru ---
+    var formData = new URLSearchParams();
+    formData.append('nama', fields.nama.value);
+    formData.append('kelas', fields.kelas.value);
+    formData.append('instansi', fields.instansi.value);
+    formData.append('no-whatsapp', fields.noWhatsapp.value);
+    formData.append('kesan', fields.kesan.value);
+    formData.append('kritik', fields.kritik.value);
+    formData.append('saran', fields.saran.value);
 
     try {
       if (submitBtn) submitBtn.disabled = true;
       statusEl.textContent = 'Mengirim...';
 
-      var res = await fetch('/api/kuesioner', {
+      var res = await fetch(KUESIONER_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString(),
       });
+      // ----------------------------------------------------------------------
 
       if (res.ok) {
         form.reset();
@@ -817,9 +809,9 @@ function handleCaptchaExpired(prefix) {
   });
 })();
 
+
 /* =========================================================
    15. RESPONSIVE HCAPTCHA
-   Scale widget agar fit di mobile, tapi ukuran asli di desktop
    ========================================================= */
 (function initResponsiveCaptcha() {
   function updateCaptchaSize() {
@@ -829,18 +821,15 @@ function handleCaptchaExpired(prefix) {
       var iframe = container.querySelector('iframe');
       if (!iframe) return;
 
-      // Reset state setiap kali dipanggil (biar idempotent)
       iframe.style.transform = '';
       iframe.style.transformOrigin = '';
       container.style.height = '';
 
-      // Desktop: biarkan ukuran asli
       if (!isMobile) return;
 
       var containerWidth = container.clientWidth;
       var nativeWidth = iframe.offsetWidth || 303;
 
-      // Scale hanya jika widget lebih lebar dari container
       if (nativeWidth > containerWidth && containerWidth > 0) {
         var scale = containerWidth / nativeWidth;
         iframe.style.transformOrigin = '0 0';
@@ -850,21 +839,18 @@ function handleCaptchaExpired(prefix) {
     });
   }
 
-  // 1. Panggil beberapa kali setelah load (hCaptcha render async)
   window.addEventListener('load', function () {
     setTimeout(updateCaptchaSize, 300);
     setTimeout(updateCaptchaSize, 1000);
     setTimeout(updateCaptchaSize, 2500);
   });
 
-  // 2. Panggil saat window di-resize (debounced)
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(updateCaptchaSize, 200);
   });
 
-  // 3. Pantau perubahan DOM: hCaptcha inject iframe belakangan
   if (window.MutationObserver) {
     var observer = new MutationObserver(function () {
       updateCaptchaSize();
