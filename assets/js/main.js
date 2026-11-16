@@ -816,3 +816,61 @@ function handleCaptchaExpired(prefix) {
     }
   });
 })();
+
+/* =========================================================
+   15. RESPONSIVE HCAPTCHA
+   Scale widget agar fit di mobile, tapi ukuran asli di desktop
+   ========================================================= */
+(function initResponsiveCaptcha() {
+  function updateCaptchaSize() {
+    var isMobile = window.innerWidth < 768;
+
+    document.querySelectorAll('.h-captcha').forEach(function (container) {
+      var iframe = container.querySelector('iframe');
+      if (!iframe) return;
+
+      // Reset state setiap kali dipanggil (biar idempotent)
+      iframe.style.transform = '';
+      iframe.style.transformOrigin = '';
+      container.style.height = '';
+
+      // Desktop: biarkan ukuran asli
+      if (!isMobile) return;
+
+      var containerWidth = container.clientWidth;
+      var nativeWidth = iframe.offsetWidth || 303;
+
+      // Scale hanya jika widget lebih lebar dari container
+      if (nativeWidth > containerWidth && containerWidth > 0) {
+        var scale = containerWidth / nativeWidth;
+        iframe.style.transformOrigin = '0 0';
+        iframe.style.transform = 'scale(' + scale + ')';
+        container.style.height = (iframe.offsetHeight * scale) + 'px';
+      }
+    });
+  }
+
+  // 1. Panggil beberapa kali setelah load (hCaptcha render async)
+  window.addEventListener('load', function () {
+    setTimeout(updateCaptchaSize, 300);
+    setTimeout(updateCaptchaSize, 1000);
+    setTimeout(updateCaptchaSize, 2500);
+  });
+
+  // 2. Panggil saat window di-resize (debounced)
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(updateCaptchaSize, 200);
+  });
+
+  // 3. Pantau perubahan DOM: hCaptcha inject iframe belakangan
+  if (window.MutationObserver) {
+    var observer = new MutationObserver(function () {
+      updateCaptchaSize();
+    });
+    document.querySelectorAll('.h-captcha').forEach(function (container) {
+      observer.observe(container, { childList: true, subtree: true });
+    });
+  }
+})();
