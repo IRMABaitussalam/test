@@ -1,12 +1,5 @@
 /* =========================================================
    KONFIGURASI GLOBAL
-   ---------------------------------------------------------
-   BYPASS_CAPTCHA:
-   - true  → Lewati verifikasi captcha (untuk testing lokal)
-   - false → Wajib verifikasi captcha (untuk production)
-
-   API_VERIFY_URL:
-   - Endpoint Vercel untuk memverifikasi token hCaptcha
    ========================================================= */
 var BYPASS_CAPTCHA = false;
 var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
@@ -14,7 +7,6 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 /* =========================================================
    1. LOADER
-   Sembunyikan loading screen setelah halaman siap
    ========================================================= */
 (function initLoader() {
   var loader = document.getElementById('page-loader');
@@ -88,7 +80,6 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 /* =========================================================
    4. SCROLL REVEAL (Anti-FOUC)
-   Animasi muncul saat elemen masuk viewport
    ========================================================= */
 (function initScrollReveal() {
   var els = document.querySelectorAll('.reveal');
@@ -211,7 +202,6 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 /* =========================================================
    8. SUCCESS OVERLAY
-   Tampilan sukses full-screen setelah form terkirim
    ========================================================= */
 var overlayTimeout;
 
@@ -264,24 +254,18 @@ async function verifyTokenOnServer(token) {
     }
 
     var result = await response.json();
-
-    if (result.success === true) {
-      return { success: true };
-    }
+    if (result.success === true) return { success: true };
 
     var errors = result.errors || [];
-
     if (errors.indexOf('invalid-input-response') !== -1 ||
         errors.indexOf('expired-input-response') !== -1 ||
         errors.indexOf('timeout-or-duplicate') !== -1) {
       return { success: false, message: 'Captcha sudah kadaluarsa. Silakan selesaikan ulang.' };
     }
-
     if (errors.indexOf('invalid-input-secret') !== -1 ||
         errors.indexOf('missing-input-secret') !== -1) {
       return { success: false, message: 'Konfigurasi server salah. Hubungi admin.' };
     }
-
     return { success: false, message: 'Verifikasi captcha gagal. Silakan coba lagi.' };
   } catch (error) {
     console.error('Error verifying hCaptcha token:', error);
@@ -291,28 +275,56 @@ async function verifyTokenOnServer(token) {
 
 
 /* =========================================================
-   10. VALIDATOR EMAIL — PESAN SPESIFIK PER KASUS
-   Mengembalikan { valid: boolean, message: string }
+   10. VALIDATORS — PESAN SPESIFIK PER FIELD
+   Semua validator mengembalikan { valid, message }
    ========================================================= */
+
+// Nama (dipakai untuk Nama Lengkap)
+function validateName(value, label) {
+  var v = (value || '').trim();
+  if (!v) return { valid: false, message: label + ' wajib diisi.' };
+  if (v.length < 3) return { valid: false, message: label + ' minimal 3 karakter.' };
+  return { valid: true, message: '' };
+}
+
+// Teks umum (pesan, kesan, kritik, saran, kelas, instansi)
+function validateText(value, label, minLength) {
+  var v = (value || '').trim();
+  if (!v) return { valid: false, message: label + ' wajib diisi.' };
+  if (minLength && v.length < minLength) {
+    return { valid: false, message: label + ' minimal ' + minLength + ' karakter.' };
+  }
+  return { valid: true, message: '' };
+}
+
+// Nomor WhatsApp
+function validateWhatsAppNumber(value) {
+  var v = (value || '').trim();
+  if (!v) return { valid: false, message: 'Nomor WhatsApp wajib diisi.' };
+  var digits = v.replace(/[^0-9]/g, '');
+  if (digits.length < 10) return { valid: false, message: 'Nomor WhatsApp terlalu pendek (minimal 10 digit).' };
+  if (digits.length > 15) return { valid: false, message: 'Nomor WhatsApp terlalu panjang (maksimal 15 digit).' };
+  if (digits.charAt(0) !== '6' && digits.charAt(0) !== '0') {
+    return { valid: false, message: 'Nomor WhatsApp harus diawali +62 atau 0.' };
+  }
+  return { valid: true, message: '' };
+}
+
+// Email (validator canggih — 14 skenario)
 function validateEmailDetailed(email) {
-  // 1. Kosong
   if (!email || email.trim() === '') {
     return { valid: false, message: 'Email wajib diisi.' };
   }
 
   email = email.trim();
 
-  // 2. Ada spasi
   if (/\s/.test(email)) {
     return { valid: false, message: 'Email tidak boleh mengandung spasi.' };
   }
-
-  // 3. Terlalu panjang (RFC 5321)
   if (email.length > 254) {
     return { valid: false, message: 'Email terlalu panjang (maksimal 254 karakter).' };
   }
 
-  // 4. Jumlah simbol @
   var atCount = (email.match(/@/g) || []).length;
   if (atCount === 0) {
     return { valid: false, message: 'Email harus mengandung simbol @. Contoh: nama@contoh.com' };
@@ -321,24 +333,18 @@ function validateEmailDetailed(email) {
     return { valid: false, message: 'Email hanya boleh mengandung satu simbol @.' };
   }
 
-  // 5. Pisahkan local part & domain
   var parts = email.split('@');
   var local = parts[0];
   var domain = parts[1];
 
-  if (!local) {
-    return { valid: false, message: 'Bagian nama pengguna (sebelum @) tidak boleh kosong.' };
-  }
-  if (!domain) {
-    return { valid: false, message: 'Bagian domain (setelah @) tidak boleh kosong. Contoh: nama@gmail.com' };
-  }
+  if (!local) return { valid: false, message: 'Bagian nama pengguna (sebelum @) tidak boleh kosong.' };
+  if (!domain) return { valid: false, message: 'Bagian domain (setelah @) tidak boleh kosong. Contoh: nama@gmail.com' };
 
-  // 6. Local part
   if (local.length > 64) {
     return { valid: false, message: 'Bagian nama pengguna (sebelum @) terlalu panjang (maksimal 64 karakter).' };
   }
   if (!/^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(local)) {
-    return { valid: false, message: 'Nama pengguna hanya boleh berisi huruf, angka, titik, dan beberapa simbol (!#$%&\'*+/=?^_`{|}~-).' };
+    return { valid: false, message: 'Nama pengguna hanya boleh berisi huruf, angka, titik, dan simbol umum.' };
   }
   if (local.charAt(0) === '.' || local.charAt(local.length - 1) === '.') {
     return { valid: false, message: 'Nama pengguna tidak boleh diawali atau diakhiri dengan titik.' };
@@ -347,7 +353,6 @@ function validateEmailDetailed(email) {
     return { valid: false, message: 'Nama pengguna tidak boleh mengandung dua titik berurutan (..).' };
   }
 
-  // 7. Domain
   if (domain.indexOf('.') === -1) {
     return { valid: false, message: 'Domain harus mengandung titik. Contoh: nama@gmail.com' };
   }
@@ -361,7 +366,6 @@ function validateEmailDetailed(email) {
     return { valid: false, message: 'Domain tidak boleh diawali atau diakhiri dengan tanda minus.' };
   }
 
-  // 8. TLD (ekstensi setelah titik terakhir)
   var tld = domain.split('.').pop();
   if (tld.length < 2) {
     return { valid: false, message: 'Ekstensi domain terlalu pendek (minimal 2 huruf). Contoh: .com, .id' };
@@ -370,33 +374,18 @@ function validateEmailDetailed(email) {
     return { valid: false, message: 'Ekstensi domain hanya boleh berisi huruf (contoh: .com, .id, .net).' };
   }
 
-  // 9. Deteksi typo domain umum
   var domainLower = domain.toLowerCase();
   var typoMap = {
-    'gmail.co':   'gmail.com',
-    'gmail.cm':   'gmail.com',
-    'gmail.con':  'gmail.com',
-    'gmial.com':  'gmail.com',
-    'gmai.com':   'gmail.com',
-    'gmil.com':   'gmail.com',
-    'gmail.comm': 'gmail.com',
-    'yahoo.co':   'yahoo.com',
-    'yahoo.con':  'yahoo.com',
-    'yaho.com':   'yahoo.com',
-    'yahooo.com': 'yahoo.com',
-    'hotmai.com': 'hotmail.com',
-    'hotmal.com': 'hotmail.com',
-    'hotmail.co': 'hotmail.com',
-    'outlok.com': 'outlook.com',
-    'outloo.com': 'outlook.com',
-    'outlook.co': 'outlook.com',
+    'gmail.co': 'gmail.com', 'gmail.cm': 'gmail.com', 'gmail.con': 'gmail.com',
+    'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gmil.com': 'gmail.com',
+    'gmail.comm': 'gmail.com', 'yahoo.co': 'yahoo.com', 'yahoo.con': 'yahoo.com',
+    'yaho.com': 'yahoo.com', 'yahooo.com': 'yahoo.com',
+    'hotmai.com': 'hotmail.com', 'hotmal.com': 'hotmail.com', 'hotmail.co': 'hotmail.com',
+    'outlok.com': 'outlook.com', 'outloo.com': 'outlook.com', 'outlook.co': 'outlook.com',
   };
 
   if (typoMap[domainLower]) {
-    return {
-      valid: false,
-      message: 'Sepertinya ada salah ketik. Maksud Anda @' + typoMap[domainLower] + '?'
-    };
+    return { valid: false, message: 'Sepertinya ada salah ketik. Maksud Anda @' + typoMap[domainLower] + '?' };
   }
 
   return { valid: true, message: '' };
@@ -404,12 +393,10 @@ function validateEmailDetailed(email) {
 
 
 /* =========================================================
-   11. INPUT MASK UNTUK NOMOR WHATSAPP
-   Menggunakan jQuery Mask Plugin (dimuat dari head.html)
+   11. INPUT MASK WHATSAPP
    ========================================================= */
 (function initWhatsAppMask() {
   if (typeof jQuery === 'undefined' || typeof jQuery.fn.mask === 'undefined') return;
-
   var $waInput = jQuery('#no-whatsapp');
   if ($waInput.length) {
     $waInput.mask('+62 899-9999-99999', { placeholder: '+62 8xx-xxxx-xxxx' });
@@ -436,6 +423,9 @@ function validateEmailDetailed(email) {
     var statusEl = document.getElementById('form-status-' + prefix);
     var submitBtn = document.getElementById('submit-btn-' + prefix);
 
+    // Flag: validasi real-time hanya aktif SETELAH submit pertama
+    var hasSubmitted = false;
+
     function showError(input, message) {
       var err = document.getElementById(input.id + '-error');
       if (err) err.textContent = message;
@@ -447,97 +437,64 @@ function validateEmailDetailed(email) {
       input.classList.remove('invalid');
     }
 
-    // ------------------------------------------------
-    // Validasi saat blur & input — NAMA & PESAN (umum)
-    // ------------------------------------------------
-    [nameInput, messageInput].forEach(function (input) {
+    // Validator per-field. Mengembalikan true jika valid.
+    function validateField(input) {
+      if (!input) return true;
+      var result;
+
+      if (input === nameInput) {
+        result = validateName(input.value, 'Nama lengkap');
+      } else if (input === emailOrWaInput) {
+        if (prefix === 'email') {
+          result = validateEmailDetailed(input.value);
+        } else {
+          result = validateWhatsAppNumber(input.value);
+        }
+      } else if (input === messageInput) {
+        result = validateText(input.value, 'Pesan', 10);
+      } else {
+        return true;
+      }
+
+      if (result.valid) clearError(input);
+      else showError(input, result.message);
+
+      return result.valid;
+    }
+
+    // ---------------------------------------------------
+    // Real-time listener — TAPI hanya aktif setelah submit
+    // ---------------------------------------------------
+    [nameInput, emailOrWaInput, messageInput].forEach(function (input) {
       if (!input) return;
-      input.addEventListener('blur', function () {
-        if (!input.checkValidity()) showError(input, input.validationMessage);
-        else clearError(input);
-      });
       input.addEventListener('input', function () {
-        if (input.checkValidity()) clearError(input);
+        if (hasSubmitted) validateField(input);
       });
     });
 
-    // ------------------------------------------------
-    // Validasi EMAIL (khusus form email) — pakai validator detail
-    // ------------------------------------------------
-    if (prefix === 'email' && emailOrWaInput) {
-      emailOrWaInput.addEventListener('blur', function () {
-        var check = validateEmailDetailed(this.value);
-        if (!check.valid) showError(this, check.message);
-        else clearError(this);
-      });
-      emailOrWaInput.addEventListener('input', function () {
-        if (this.value === '') { clearError(this); return; }
-        var check = validateEmailDetailed(this.value);
-        if (!check.valid) showError(this, check.message);
-        else clearError(this);
-      });
-    }
-
-    // ------------------------------------------------
-    // Validasi WHATSAPP (khusus form WA) — pakai checkValidity standar
-    // ------------------------------------------------
-    if (prefix === 'wa' && emailOrWaInput) {
-      emailOrWaInput.addEventListener('blur', function () {
-        if (!this.checkValidity()) showError(this, this.validationMessage);
-        else clearError(this);
-      });
-      emailOrWaInput.addEventListener('input', function () {
-        if (this.checkValidity()) clearError(this);
-      });
-    }
-
-    // ------------------------------------------------
-    // Checkbox persetujuan
-    // ------------------------------------------------
     if (agreeCheckbox) {
       agreeCheckbox.addEventListener('change', function () {
+        if (!hasSubmitted) return;
         var err = document.getElementById(agreeCheckbox.id + '-error');
-        if (err) err.textContent = agreeCheckbox.checked ? '' : 'Anda harus menyetujui syarat dan ketentuan.';
+        if (err) {
+          err.textContent = agreeCheckbox.checked ? '' : 'Anda harus menyetujui syarat dan ketentuan.';
+        }
       });
     }
 
-    // ------------------------------------------------
+    // ---------------------------------------------------
     // Submit handler
-    // ------------------------------------------------
+    // ---------------------------------------------------
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
+      hasSubmitted = true;
+
       var valid = true;
 
-      // A. Validasi field teks umum (nama & pesan)
-      [nameInput, messageInput].forEach(function (input) {
-        if (!input) return;
-        if (!input.checkValidity()) {
-          showError(input, input.validationMessage);
-          valid = false;
-        } else {
-          clearError(input);
-        }
-      });
-
-      // A.2 Validasi email / WA (spesifik per tipe form)
-      if (emailOrWaInput) {
-        if (prefix === 'email') {
-          var emailCheck = validateEmailDetailed(emailOrWaInput.value);
-          if (!emailCheck.valid) {
-            showError(emailOrWaInput, emailCheck.message);
-            valid = false;
-          } else {
-            clearError(emailOrWaInput);
-          }
-        } else {
-          if (!emailOrWaInput.checkValidity()) {
-            showError(emailOrWaInput, emailOrWaInput.validationMessage);
-            valid = false;
-          } else {
-            clearError(emailOrWaInput);
-          }
-        }
-      }
+      // A. Validasi field teks
+      if (!validateField(nameInput)) valid = false;
+      if (!validateField(emailOrWaInput)) valid = false;
+      if (!validateField(messageInput)) valid = false;
 
       // B. Validasi checkbox persetujuan
       if (agreeCheckbox && !agreeCheckbox.checked) {
@@ -568,16 +525,24 @@ function validateEmailDetailed(email) {
             if (window.hcaptcha) window.hcaptcha.reset();
             if (submitBtn) submitBtn.disabled = false;
             valid = false;
-          } else {
-            if (captchaError) captchaError.textContent = '';
+          } else if (captchaError) {
+            captchaError.textContent = '';
           }
         }
       }
 
-      if (!valid) return;
+      // Jika ada error, scroll ke field pertama yang invalid
+      if (!valid) {
+        var firstInvalid = form.querySelector('.invalid');
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          try { firstInvalid.focus({ preventScroll: true }); } catch (e) {}
+        }
+        return;
+      }
 
-      // D. Kirim form berdasarkan tipe
-      // D.1 EMAIL — kirim ke Google Apps Script
+      // D. Kirim form
+      // D.1 EMAIL
       if (prefix === 'email') {
         try {
           if (submitBtn) submitBtn.disabled = true;
@@ -597,6 +562,7 @@ function validateEmailDetailed(email) {
 
           if (res.ok) {
             form.reset();
+            hasSubmitted = false;
             if (window.hcaptcha) window.hcaptcha.reset();
             statusEl.textContent = '';
             if (submitBtn) submitBtn.disabled = false;
@@ -614,7 +580,7 @@ function validateEmailDetailed(email) {
         }
       }
 
-      // D.2 WHATSAPP — buka aplikasi WhatsApp
+      // D.2 WHATSAPP
       if (prefix === 'wa') {
         var waLink = "https://web.whatsapp.com/send";
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -633,6 +599,7 @@ function validateEmailDetailed(email) {
 
         window.open(finalWaLink, '_blank');
         form.reset();
+        hasSubmitted = false;
         if (window.hcaptcha) window.hcaptcha.reset();
         showSuccessOverlay(
           'Membuka WhatsApp!',
@@ -668,6 +635,8 @@ function validateEmailDetailed(email) {
   var statusEl = document.getElementById('form-status');
   var submitBtn = document.getElementById('submit-btn');
 
+  var hasSubmitted = false;
+
   function showError(input, message) {
     var err = document.getElementById(input.id + '-error');
     if (err) err.textContent = message;
@@ -679,36 +648,69 @@ function validateEmailDetailed(email) {
     input.classList.remove('invalid');
   }
 
-  // Validasi saat blur & input
+  // Validator per-field
+  function validateField(key) {
+    var input = fields[key];
+    if (!input) return true;
+    var result;
+
+    if (key === 'nama') {
+      result = validateName(input.value, 'Nama lengkap');
+    } else if (key === 'kelas') {
+      result = validateText(input.value, 'Kelas');
+    } else if (key === 'instansi') {
+      result = validateText(input.value, 'Instansi');
+    } else if (key === 'noWhatsapp') {
+      result = validateWhatsAppNumber(input.value);
+    } else if (key === 'kesan') {
+      result = validateText(input.value, 'Kesan', 5);
+    } else if (key === 'kritik') {
+      result = validateText(input.value, 'Kritik', 5);
+    } else if (key === 'saran') {
+      result = validateText(input.value, 'Saran', 5);
+    } else {
+      return true;
+    }
+
+    if (result.valid) clearError(input);
+    else showError(input, result.message);
+
+    return result.valid;
+  }
+
+  // Real-time listener — hanya setelah submit
   Object.keys(fields).forEach(function (key) {
+    if (key === 'agree') return;
     var input = fields[key];
     if (!input) return;
-    input.addEventListener('blur', function () {
-      if (!input.checkValidity()) showError(input, input.validationMessage);
-      else clearError(input);
-    });
     input.addEventListener('input', function () {
-      if (input.checkValidity()) clearError(input);
+      if (hasSubmitted) validateField(key);
     });
   });
 
-  form.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    var valid = true;
-
-    // A. Validasi field teks
-    [fields.nama, fields.kelas, fields.instansi, fields.noWhatsapp,
-     fields.kesan, fields.kritik, fields.saran].forEach(function (input) {
-      if (!input) return;
-      if (!input.checkValidity()) {
-        showError(input, input.validationMessage);
-        valid = false;
-      } else {
-        clearError(input);
+  if (fields.agree) {
+    fields.agree.addEventListener('change', function () {
+      if (!hasSubmitted) return;
+      var err = document.getElementById(fields.agree.id + '-error');
+      if (err) {
+        err.textContent = fields.agree.checked ? '' : 'Anda harus menyetujui syarat dan ketentuan.';
       }
     });
+  }
 
-    // B. Validasi checkbox persetujuan
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hasSubmitted = true;
+
+    var valid = true;
+
+    // A. Validasi semua field teks
+    Object.keys(fields).forEach(function (key) {
+      if (key === 'agree') return;
+      if (!validateField(key)) valid = false;
+    });
+
+    // B. Validasi checkbox
     var agreeError = document.getElementById('agree-error');
     if (!fields.agree.checked) {
       if (agreeError) agreeError.textContent = 'Anda harus menyetujui syarat dan ketentuan.';
@@ -717,7 +719,7 @@ function validateEmailDetailed(email) {
       agreeError.textContent = '';
     }
 
-    // C. Validasi & Verifikasi hCaptcha
+    // C. hCaptcha
     if (!BYPASS_CAPTCHA) {
       var captchaResponse = form.querySelector('[name="h-captcha-response"]');
       var captchaError = document.getElementById('captcha-error');
@@ -739,15 +741,23 @@ function validateEmailDetailed(email) {
           if (window.hcaptcha) window.hcaptcha.reset();
           if (submitBtn) submitBtn.disabled = false;
           valid = false;
-        } else {
-          if (captchaError) captchaError.textContent = '';
+        } else if (captchaError) {
+          captchaError.textContent = '';
         }
       }
     }
 
-    if (!valid) return;
+    // Scroll ke field invalid pertama
+    if (!valid) {
+      var firstInvalid = form.querySelector('.invalid');
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        try { firstInvalid.focus({ preventScroll: true }); } catch (e) {}
+      }
+      return;
+    }
 
-    // D. Kirim data kuesioner ke endpoint backend
+    // D. Kirim data
     var payload = {
       nama: fields.nama.value,
       kelas: fields.kelas.value,
@@ -773,6 +783,7 @@ function validateEmailDetailed(email) {
 
       if (res.ok) {
         form.reset();
+        hasSubmitted = false;
         if (window.hcaptcha) window.hcaptcha.reset();
         statusEl.textContent = '';
         if (submitBtn) submitBtn.disabled = false;
