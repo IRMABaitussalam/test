@@ -646,7 +646,7 @@ function handleCaptchaExpired(prefix) {
   var form = document.getElementById('kuesioner-form');
   if (!form) return;
 
-  var KUESIONER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQEdAkCkhAkG49kzJo36mdy3Hr4pQNTufEJoqibgqWpqYkGM_byo8zz1lKKXpP61I/exec";
+  var GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQEdAkCkhAkG49kzJo36mdy3Hr4pQNTufEJoqibgqWpqYkGM_byo8zz1lKKXpP61I/exec";
 
   var fields = {
     nama: document.getElementById('nama'),
@@ -780,7 +780,7 @@ function handleCaptchaExpired(prefix) {
       if (submitBtn) submitBtn.disabled = true;
       statusEl.textContent = 'Mengirim...';
 
-      var res = await fetch(KUESIONER_SCRIPT_URL, {
+      var res = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString(),
