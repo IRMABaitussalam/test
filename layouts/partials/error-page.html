@@ -1,0 +1,33 @@
+{{/*
+  Reusable error page component
+*/}}
+{{ $code := .code | default "!" }}
+{{ $title := .title | default "Terjadi Kesalahan" }}
+{{ $message := .message | default "Maaf, terjadi kesalahan yang tidak terduga." }}
+{{ $kicker := .kicker | default "Terjadi Kesalahan" }}
+{{ $site := .Site }}
+
+<div class="error-page">
+  <div class="error-inner">
+    <div class="error-icon-wrap" aria-hidden="true">
+      <span class="error-code">{{ $code }}</span>
+    </div>
+
+    <p class="error-kicker">&#10022; {{ $kicker }} &#10022;</p>
+    <h1 class="error-title">{{ $title }}</h1>
+    <p class="error-message">{{ $message }}</p>
+
+    {{ partial "divider.html" . }}
+
+    <div class="error-actions">
+      <a href="{{ $site.BaseURL }}" class="btn-primary">
+        <i class="fa-solid fa-house"></i> Kembali ke Beranda
+      </a>
+      <a href="{{ "kontak/" | relURL }}" class="btn-outline">
+        <i class="fa-solid fa-envelope"></i> Hubungi Kami
+      </a>
+    </div>
+
+    <p class="error-arabic" lang="ar" dir="rtl">وَاللّٰهُ الْمُوَفِّقُ إِلَى أَقْوَمِ الطَّرِيْقِ</p>
+  </div>
+</div>

@@ -48,21 +48,23 @@
     }
   })();
 </script>
+
 {{/* ====== MAINTENANCE MODE CHECK ====== */}}
 {{ if os.FileExists "MAINTENANCE" }}
 <script>
   (function () {
     var path = location.pathname;
 
-    // Whitelist: path yang TIDAK di-redirect
-    var whitelist = ['/maintenance', '/api', '/images', '/css', '/js',
-                     '/fonts', '/favicon', '/test', '/_next'];
+    // 1. Jangan redirect jika sedang berada di halaman maintenance itu sendiri
+    if (path.indexOf('/maintenance') !== -1) return;
 
-    for (var i = 0; i < whitelist.length; i++) {
-      if (path.indexOf(whitelist[i]) === 0) return;
-    }
+    // 2. Jangan redirect untuk request API
+    if (path.indexOf('/api') !== -1) return;
 
-    // Redirect ke halaman maintenance
+    // 3. Jangan redirect untuk file aset (CSS, JS, Gambar, Font)
+    if (path.match(/\.(css|js|png|jpg|jpeg|gif|svg|webp|woff|woff2|ttf|ico|xml|json)$/i)) return;
+
+    // 4. Redirect semua request halaman ke maintenance
     location.replace('{{ "maintenance/" | relURL }}');
   })();
 </script>
