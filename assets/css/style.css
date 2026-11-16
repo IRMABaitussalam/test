@@ -1205,15 +1205,6 @@ body.no-scroll { overflow: hidden; }
   justify-content: center;
   color: var(--gold);
 }
-
-.error-icon-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.35;
-}
-
 .error-code {
   position: relative;
   font-family: var(--font-display);
