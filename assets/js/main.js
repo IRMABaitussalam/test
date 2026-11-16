@@ -6,27 +6,133 @@ var API_VERIFY_URL = 'https://irmabaitussalam.vercel.app/api/verify';
 
 
 /* =========================================================
-   1. LOADER
+   1. LOADER — Tunggu Semua Resource Sebelum Hilang
+   =========================================================
+   Alur:
+   1. Tunggu window.load (CSS, JS, font, gambar eager)
+   2. Paksa lazy image untuk load sekarang, tunggu semua selesai
+   3. Tunggu widget hCaptcha render (khusus halaman form)
+   4. Baru sembunyikan loader
+
+   Safety:
+   - Minimal tampil 600ms (biar tidak "flash")
+   - Maksimal tampil 10s (fallback kalau ada yang nyangkut)
    ========================================================= */
 (function initLoader() {
   var loader = document.getElementById('page-loader');
   if (!loader) return;
   if (document.documentElement.classList.contains('loader-skip')) return;
 
+  var hidden = false;
+  var startTime = Date.now();
+  var MIN_SHOW_TIME = 600;    // Minimal tampil 600ms
+  var MAX_WAIT_TIME = 10000;  // Paksa hilang setelah 10 detik
+
   function hide() {
-    loader.classList.add('is-hidden');
-    try { sessionStorage.setItem('irma-loader-shown', '1'); } catch (e) {}
-    setTimeout(function () { loader.style.display = 'none'; }, 800);
+    if (hidden) return;
+    hidden = true;
+
+    var elapsed = Date.now() - startTime;
+    var remaining = Math.max(0, MIN_SHOW_TIME - elapsed);
+
+    setTimeout(function () {
+      loader.classList.add('is-hidden');
+      try { sessionStorage.setItem('irma-loader-shown', '1'); } catch (e) {}
+      setTimeout(function () { loader.style.display = 'none'; }, 800);
+    }, remaining);
   }
 
+  /* ------------------------------------------------
+     A. Tunggu SEMUA gambar (termasuk lazy)
+     ------------------------------------------------ */
+  function waitForAllImages() {
+    return new Promise(function (resolve) {
+      // Paksa lazy image untuk load sekarang
+      document.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
+        img.loading = 'eager';
+      });
+
+      var images = Array.from(document.querySelectorAll('img'));
+      var pending = images.filter(function (img) { return !img.complete; });
+      if (pending.length === 0) return resolve();
+
+      var remaining = pending.length;
+      var resolver = function () {
+        remaining--;
+        if (remaining === 0) resolve();
+      };
+
+      pending.forEach(function (img) {
+        img.addEventListener('load', resolver, { once: true });
+        img.addEventListener('error', resolver, { once: true });
+      });
+
+      // Timeout: jangan block loader selamanya jika ada gambar nyangkut
+      setTimeout(resolve, 6000);
+    });
+  }
+
+  /* ------------------------------------------------
+     B. Tunggu widget hCaptcha render (jika ada)
+     ------------------------------------------------ */
+  function waitForCaptcha() {
+    return new Promise(function (resolve) {
+      // Hanya cek captcha yang VISIBLE (bukan di tab hidden)
+      var widgets = Array.from(document.querySelectorAll('.h-captcha')).filter(function (w) {
+        return w.getClientRects().length > 0;
+      });
+
+      if (widgets.length === 0) return resolve();
+
+      var checkAll = function () {
+        return widgets.every(function (w) {
+          return w.querySelector('iframe') !== null;
+        });
+      };
+      if (checkAll()) return resolve();
+
+      var resolved = false;
+      var done = function () {
+        if (resolved) return;
+        resolved = true;
+        resolve();
+      };
+
+      var observer = new MutationObserver(function () {
+        if (checkAll()) {
+          observer.disconnect();
+          done();
+        }
+      });
+
+      widgets.forEach(function (w) {
+        observer.observe(w, { childList: true, subtree: true });
+      });
+
+      // Timeout: kalau captcha gagal render (misal offline), jangan block
+      setTimeout(done, 3500);
+    });
+  }
+
+  /* ------------------------------------------------
+     C. Orkestrasi: jalankan semua task paralel
+     ------------------------------------------------ */
+  function startLoading() {
+    Promise.all([waitForAllImages(), waitForCaptcha()])
+      .then(hide)
+      .catch(hide); // Apapun errornya, tetap hide
+  }
+
+  // Jalankan setelah window.load (CSS/JS/font sudah siap)
   if (document.readyState === 'complete') {
-    setTimeout(hide, 900);
+    startLoading();
   } else {
-    window.addEventListener('load', function () { setTimeout(hide, 900); });
-    setTimeout(hide, 5000);
+    window.addEventListener('load', startLoading);
   }
-})();
 
+  // Fallback terakhir: paksa hide setelah 10 detik
+  setTimeout(hide, MAX_WAIT_TIME);
+})();
 
 /* =========================================================
    2. TEMA GELAP / TERANG
