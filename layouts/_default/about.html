@@ -66,7 +66,7 @@
   </section>
 
   <!-- Pengurus dengan Tab -->
-  <section class="about-section reveal">
+  <section class="about-section reveal delay-1">
     <h2 class="section-title">Pengurus IRMA Baitussalam</h2>
     <div class="form-tabs" id="pengurus-tabs">
       {{ range $i, $p := .Site.Data.pengurus }}
@@ -76,7 +76,7 @@
 
     {{ range $i, $p := .Site.Data.pengurus }}
       <div id="periode-{{ $i }}" class="tab-pane {{ if eq $i 0 }}active{{ end }}">
-        <div class="pengurus-grid reveal">
+        <div class="pengurus-grid reveal delay-2">
           {{ range $p.anggota }}
             {{ $nama := .nama }}
             <div class="pengurus-card reveal">
