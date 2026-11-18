@@ -569,9 +569,9 @@ body.no-scroll { overflow: hidden; }
   /* will-change DIHAPUS — biar browser handle sendiri */
 }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
-.reveal.delay-1 { transition-delay: 0.14s; }
-.reveal.delay-2 { transition-delay: 0.28s; }
-.reveal.delay-3 { transition-delay: 0.42s; }
+.reveal.delay-1 { transition-delay: 0.12s; }
+.reveal.delay-2 { transition-delay: 0.24s; }
+.reveal.delay-3 { transition-delay: 0.36s; }
 
 /* =========================================================
    RESPONSIF (MOBILE & TABLET)
