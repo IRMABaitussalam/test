@@ -56,12 +56,12 @@
       <div class="form-group">
         <label for="name"><i class="fa-solid fa-user"></i> Nama Lengkap <span class="required">*</span></label>
         <input type="text" id="name" name="name" required minlength="3" placeholder="Contoh: Gilang Ramdani">
-        <span class="error-message" id="name-error"></span>
+        <span class="form-error-message" id="name-error"></span>
       </div>
       <div class="form-group">
         <label for="email"><i class="fa-solid fa-envelope"></i> Alamat Email <span class="required">*</span></label>
         <input type="email" id="email" name="email" required placeholder="emailaddress@example.com">
-        <span class="error-message" id="email-error"></span>
+        <span class="form-error-message" id="email-error"></span>
       </div>
       <div class="form-group">
         <label for="subject"><i class="fa-solid fa-tag"></i> Alasan Menghubungi</label>
@@ -70,7 +70,7 @@
       <div class="form-group">
         <label for="message"><i class="fa-solid fa-comment-dots"></i> Tulis Pesanmu <span class="required">*</span></label>
         <textarea id="message" name="message" rows="5" required minlength="10" placeholder="Ketik..."></textarea>
-        <span class="error-message" id="message-error"></span>
+        <span class="form-error-message" id="message-error"></span>
       </div>
       <div class="form-group">
         <label><i class="fa-solid fa-shield-halved"></i> Verifikasi <span class="required">*</span></label>
@@ -78,14 +78,14 @@
      data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"
      data-callback="onCaptchaEmailSuccess"
      data-expired-callback="onCaptchaEmailExpired"></div>
-        <span class="error-message" id="captcha-error-email"></span>
+        <span class="form-error-message" id="captcha-error-email"></span>
       </div>
       <div class="form-group">
         <label class="checkbox-label">
           <input type="checkbox" id="agree" name="agree" required>
           <span>Dengan mengklik tombol "Kirim Sekarang", Anda sudah menyetujui <a href="{{ "syarat-ketentuan" | relURL }}">Syarat & Ketentuan</a>, <a href="{{ "kebijakan-privasi" | relURL }}">Kebijakan Privasi</a>, dan <a href="{{ "pedoman-komunitas" | relURL }}">Pedoman Komunitas</a> kami.</span>
         </label>
-        <span class="error-message" id="agree-error"></span>
+        <span class="form-error-message" id="agree-error"></span>
       </div>
       <button type="submit" class="btn-primary btn-block" id="submit-btn-email">
         <i class="fa-solid fa-paper-plane"></i> Kirim Sekarang
@@ -100,12 +100,12 @@
       <div class="form-group">
         <label for="name2"><i class="fa-solid fa-user"></i> Nama Lengkap <span class="required">*</span></label>
         <input type="text" id="name2" name="name" required minlength="3" placeholder="Contoh: Gilang Ramdani">
-        <span class="error-message" id="name2-error"></span>
+        <span class="form-error-message" id="name2-error"></span>
       </div>
       <div class="form-group">
         <label for="no-whatsapp"><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp <span class="required">*</span></label>
         <input type="tel" id="no-whatsapp" name="no-whatsapp" required placeholder="+62 8xx-xxxx-xxxx" pattern="[0-9+\- ]{10,20}" data-mask="+62 899-9999-99999">
-        <span class="error-message" id="no-whatsapp-error"></span>
+        <span class="form-error-message" id="no-whatsapp-error"></span>
       </div>
       <div class="form-group">
         <label for="subject2"><i class="fa-solid fa-tag"></i> Alasan Menghubungi</label>
@@ -114,7 +114,7 @@
       <div class="form-group">
         <label for="message2"><i class="fa-solid fa-comment-dots"></i> Tulis Pesanmu <span class="required">*</span></label>
         <textarea id="message2" name="message" rows="5" required minlength="10" placeholder="Ketik..."></textarea>
-        <span class="error-message" id="message2-error"></span>
+        <span class="form-error-message" id="message2-error"></span>
       </div>
       <div class="form-group">
         <label><i class="fa-solid fa-shield-halved"></i> Verifikasi <span class="required">*</span></label>
@@ -122,14 +122,14 @@
      data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"
      data-callback="onCaptchaWaSuccess"
      data-expired-callback="onCaptchaWaExpired"></div>
-        <span class="error-message" id="captcha-error-wa"></span>
+        <span class="form-error-message" id="captcha-error-wa"></span>
       </div>
       <div class="form-group">
         <label class="checkbox-label">
           <input type="checkbox" id="agree2" name="agree" required>
           <span>Dengan mengklik tombol "Kirim Sekarang", Anda sudah menyetujui <a href="{{ "syarat-ketentuan" | relURL }}">Syarat & Ketentuan</a>, <a href="{{ "kebijakan-privasi" | relURL }}">Kebijakan Privasi</a>, dan <a href="{{ "pedoman-komunitas" | relURL }}">Pedoman Komunitas</a> kami.</span>
         </label>
-        <span class="error-message" id="agree2-error"></span>
+        <span class="form-error-message" id="agree2-error"></span>
       </div>
       <button type="submit" class="btn-primary btn-block" id="submit-btn-wa">
         <i class="fa-brands fa-whatsapp"></i> Kirim Sekarang

@@ -543,7 +543,7 @@ body.no-scroll { overflow: hidden; }
 [data-theme="dark"] .form-group input:focus, [data-theme="dark"] .form-group textarea:focus { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.15); }
 .form-group input.invalid, .form-group textarea.invalid { border-color: var(--error); }
 .required { color: var(--error); }
-.error-message { display: block; color: var(--error); font-size: 0.82rem; margin-top: 0.35rem; min-height: 1.1em; }
+.form-error-message { display: block; color: var(--error); font-size: 0.82rem; margin-top: 0.35rem; min-height: 1.1em; }
 .form-status { margin-top: 1.1rem; font-weight: 500; text-align: center; color: var(--text-muted); }
 
 /* Checkbox */

@@ -42,44 +42,44 @@
     <div class="form-group">
       <label for="nama"><i class="fa-solid fa-user"></i> Nama Lengkap <span class="required">*</span></label>
       <input type="text" id="nama" name="nama" required minlength="3" placeholder="Contoh: Gilang Ramdani">
-      <span class="error-message" id="nama-error"></span>
+      <span class="form-error-message" id="nama-error"></span>
     </div>
 
     <div class="form-group">
       <label for="kelas"><i class="fa-solid fa-school"></i> Kelas <span class="required">*</span></label>
       <input type="text" id="kelas" name="kelas" required placeholder="Contoh: XII - 1">
-      <span class="error-message" id="kelas-error"></span>
+      <span class="form-error-message" id="kelas-error"></span>
     </div>
 
     <div class="form-group">
       <label for="instansi"><i class="fa-solid fa-building"></i> Instansi <span class="required">*</span></label>
       <p class="form-hint">Bisa berupa nama Ekstrakurikuler yang diikuti (jika bukan anggota) atau nama sekolah asal.</p>
       <input type="text" id="instansi" name="instansi" required placeholder="Contoh: SMA Negeri 22 Garut">
-      <span class="error-message" id="instansi-error"></span>
+      <span class="form-error-message" id="instansi-error"></span>
     </div>
 
     <div class="form-group">
       <label for="no-whatsapp"><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp <span class="required">*</span></label>
       <input type="tel" id="no-whatsapp" name="no-whatsapp" required placeholder="+62 8xx-xxxx-xxxx" pattern="[0-9+\- ]{10,20}" data-mask="+62 899-9999-99999">
-      <span class="error-message" id="no-whatsapp-error"></span>
+      <span class="form-error-message" id="no-whatsapp-error"></span>
     </div>
 
     <div class="form-group">
       <label for="kesan"><i class="fa-solid fa-face-smile"></i> Kesan mengenai Ekstrakurikuler IRMA Baitussalam <span class="required">*</span></label>
       <textarea id="kesan" name="kesan" rows="4" required minlength="5" placeholder="Tulis kesanmu..."></textarea>
-      <span class="error-message" id="kesan-error"></span>
+      <span class="form-error-message" id="kesan-error"></span>
     </div>
 
     <div class="form-group">
       <label for="kritik"><i class="fa-solid fa-comment-dots"></i> Kritik untuk Ekstrakurikuler IRMA Baitussalam <span class="required">*</span></label>
       <textarea id="kritik" name="kritik" rows="4" required minlength="5" placeholder="Tulis kritikmu..."></textarea>
-      <span class="error-message" id="kritik-error"></span>
+      <span class="form-error-message" id="kritik-error"></span>
     </div>
 
     <div class="form-group">
       <label for="saran"><i class="fa-solid fa-lightbulb"></i> Saran untuk Ekstrakurikuler IRMA Baitussalam <span class="required">*</span></label>
       <textarea id="saran" name="saran" rows="4" required minlength="5" placeholder="Tulis saranmu..."></textarea>
-      <span class="error-message" id="saran-error"></span>
+      <span class="form-error-message" id="saran-error"></span>
     </div>
 
     <div class="form-group">
@@ -88,7 +88,7 @@
            data-sitekey="{{ .Site.Params.hcaptchaSiteKey }}"
            data-callback="onCaptchaKuesionerSuccess"
            data-expired-callback="onCaptchaKuesionerExpired"></div>
-      <span class="error-message" id="captcha-error"></span>
+      <span class="form-error-message" id="captcha-error"></span>
     </div>
 
     <div class="form-group">
@@ -96,7 +96,7 @@
         <input type="checkbox" id="agree" name="agree" required>
         <span>Dengan mengklik tombol "Kirim Sekarang", Anda sudah menyetujui <a href="{{ "syarat-ketentuan" | relURL }}">Syarat & Ketentuan</a>, <a href="{{ "kebijakan-privasi" | relURL }}">Kebijakan Privasi</a>, dan <a href="{{ "pedoman-komunitas" | relURL }}">Pedoman Komunitas</a> kami.</span>
       </label>
-      <span class="error-message" id="agree-error"></span>
+      <span class="form-error-message" id="agree-error"></span>
     </div>
 
     <button type="submit" class="btn-primary btn-block" id="submit-btn">
