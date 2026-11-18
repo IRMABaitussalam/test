@@ -882,9 +882,7 @@ body.no-scroll { overflow: hidden; }
 /* =========================================================
    HALAMAN KUESIONER
    ========================================================= */
-.kuesioner-form {
-  max-width: 680px; /* Sedikit lebih lebar karena field-nya banyak */
-}
+.kuesioner-form {}
 
 .form-hint {
   font-size: 0.8rem;
