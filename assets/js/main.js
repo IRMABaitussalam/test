@@ -578,7 +578,7 @@ function handleCaptchaExpired(prefix) {
    13. FORM KONTAK (EMAIL & WHATSAPP)
    ========================================================= */
 (function initContactForms() {
-  var GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLkE2nFTCu87gYniSIsPQNUtq0CamRq-ZP8CnIaedvELdG0eELvCN3O5ClwU5uEw4P/exec";
+  var GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHaBvO4_cHTtK3nKAI-gJVtyZarurYtkdOjl3haabn08WpkX8QJNdd7YJ1YCmp6JTZ0w/exec"
   var WA_TARGET_PHONE = "6285860536014";
 
   function setupForm(formId, prefix) {
