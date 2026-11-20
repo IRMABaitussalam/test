@@ -1,9 +1,14 @@
 <footer class="site-footer">
   {{ partial "divider.html" . }}
   <div class="container footer-inner">
-    <div class="footer-brand">
-      <span>IRMA Baitussalam · SMA Negeri 22 Garut</span>
-    </div>
+    <nav class="footer-legal-links" aria-label="Informasi Legal">
+      <a href="{{ "syarat-ketentuan/" | relURL }}">Syarat & Ketentuan</a>
+      <span class="footer-legal-sep" aria-hidden="true">·</span>
+      <a href="{{ "kebijakan-privasi/" | relURL }}">Kebijakan Privasi</a>
+      <span class="footer-legal-sep" aria-hidden="true">·</span>
+      <a href="{{ "pedoman-komunitas/" | relURL }}">Pedoman Komunitas</a>
+    </nav>
+
     <p class="footer-arabic" lang="ar" dir="rtl">بَارَكَ اللّٰهُ فِيْكُمْ</p>
     <p class="footer-copy">&copy; {{ now.Format "2006" }} IRMA Baitussalam. Semua hak cipta dilindungi.</p>
 

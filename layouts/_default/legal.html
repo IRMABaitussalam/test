@@ -1,0 +1,18 @@
+{{ define "main" }}
+<article class="legal-page">
+  <header class="page-header reveal">
+    <p class="section-kicker"><i class="fa-solid fa-file-contract"></i> Informasi</p>
+    <h1>{{ .Title }}</h1>
+    {{ partial "divider.html" . }}
+    {{ with .Description }}
+    <p class="page-description">{{ . }}</p>
+    {{ end }}
+  </header>
+
+  <div class="legal-card reveal">
+    <div class="legal-content">
+      {{ .Content }}
+    </div>
+  </div>
+</article>
+{{ end }}
