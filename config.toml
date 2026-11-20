@@ -1,7 +1,9 @@
 baseURL = "https://irmabaitussalam.github.io/test/"
-languageCode = "id-id"
+locale = "id-id"
 title = "IRMA Baitussalam SMAN 22 Garut"
 enableRobotsTXT = true
+
+disableKinds = ["taxonomy", "term"]
 
 [params]
   description = "Mewujudkan remaja masjid yang beriman, bertaqwa, berkarakter, cerdas, dan terampil"

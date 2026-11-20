@@ -69,12 +69,12 @@
   <section class="about-section reveal delay-1">
     <h2 class="section-title">Pengurus IRMA Baitussalam</h2>
     <div class="form-tabs" id="pengurus-tabs">
-      {{ range $i, $p := .Site.Data.pengurus }}
+      {{ range $i, $p := hugo.Data.pengurus }}
         <button class="tab-btn {{ if eq $i 0 }}active{{ end }}" data-target="periode-{{ $i }}">{{ $p.periode }}</button>
       {{ end }}
     </div>
 
-    {{ range $i, $p := .Site.Data.pengurus }}
+    {{ range $i, $p := hugo.Data.pengurus }}
       <div id="periode-{{ $i }}" class="tab-pane {{ if eq $i 0 }}active{{ end }}">
         <div class="pengurus-grid reveal delay-2">
           {{ range $p.anggota }}
