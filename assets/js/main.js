@@ -988,3 +988,239 @@ function handleCaptchaExpired(prefix) {
     });
   }
 })();
+
+/* =========================================================
+   PRAYER WIDGET — Jadwal Sholat + Hijriyah + Countdown
+   ========================================================= */
+(function initPrayerWidget() {
+  var widget = document.getElementById('prayer-widget');
+  if (!widget) return;
+
+  var API_SHOLAT = 'https://api.myquran.com/v3/sholat/jadwal/149e9677a5989fd342ae44213df68868/today?tz=Asia/Jakarta';
+  var API_KALENDER = 'https://api.myquran.com/v3/cal/today?method=islamic-umalqura';
+
+  var loadingEl = document.getElementById('prayer-loading');
+  var listEl = document.getElementById('prayer-list');
+  var dateEl = document.getElementById('prayer-date');
+  var countdownEl = document.getElementById('prayer-countdown');
+  var labelEl = document.getElementById('prayer-countdown-label');
+  var countdownTimeEl = document.getElementById('prayer-countdown-time');
+  var countdownNameEl = document.getElementById('prayer-next-name');
+
+  var PRAYER_ORDER = [
+    { key: 'imsak',   label: 'Imsak',   icon: 'imsak' },
+    { key: 'subuh',   label: 'Shubuh',  icon: 'shubuh' },
+    { key: 'terbit',  label: 'Terbit',  icon: 'terbit' },
+    { key: 'dhuha',   label: 'Dhuha',   icon: 'dhuha' },
+    { key: 'dzuhur',  label: 'Dzuhur',  icon: 'dzuhur' },
+    { key: 'ashar',   label: 'Ashar',   icon: 'ashar' },
+    { key: 'maghrib', label: 'Maghrib', icon: 'maghrib' },
+    { key: 'isya',    label: 'Isya',    icon: 'isya' }
+  ];
+
+  var WAJIB = ['subuh', 'dzuhur', 'ashar', 'maghrib', 'isya'];
+  var ADZAN_DURATION = 5 * 60 * 1000; // 5 menit dalam ms
+
+  var countdownInterval = null;
+  var jadwalTimes = {};
+  var isJumatToday = false;
+  var currentHighlightedKey = null;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function formatCountdown(ms) {
+    if (ms < 0) ms = 0;
+    var totalSec = Math.floor(ms / 1000);
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+
+  function timeToday(hhmm) {
+    var parts = hhmm.split(':');
+    var d = new Date();
+    d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+    return d;
+  }
+
+  function getLabel(key) {
+    if (key === 'dzuhur' && isJumatToday) return "Jum'at";
+    return key.charAt(0).toUpperCase() + key.slice(1);
+  }
+
+  // Cari sholat wajib berikutnya (dalam sisa hari ini)
+  function findNextPrayer() {
+    var now = new Date();
+    for (var i = 0; i < WAJIB.length; i++) {
+      var key = WAJIB[i];
+      if (!jadwalTimes[key]) continue;
+      var t = timeToday(jadwalTimes[key]);
+      if (t > now) return { key: key, date: t };
+    }
+    var besok = timeToday(jadwalTimes.subuh);
+    besok.setDate(besok.getDate() + 1);
+    return { key: 'subuh', date: besok };
+  }
+
+  // Cek apakah kita sedang dalam window 5 menit setelah sholat
+  function findRecentPrayer() {
+    var now = new Date();
+    for (var i = WAJIB.length - 1; i >= 0; i--) {
+      var key = WAJIB[i];
+      if (!jadwalTimes[key]) continue;
+      var t = timeToday(jadwalTimes[key]);
+      var elapsed = now - t;
+      if (elapsed >= 0 && elapsed < ADZAN_DURATION) {
+        return { key: key, date: t, elapsed: elapsed };
+      }
+    }
+    return null;
+  }
+
+  // Highlight item berdasarkan key
+  function highlightPrayer(key, isAdzan) {
+    var items = document.querySelectorAll('.prayer-item');
+    items.forEach(function (el) {
+      var isTarget = el.getAttribute('data-key') === key;
+      el.classList.toggle('prayer-item--highlight', isTarget);
+      el.classList.toggle('is-adzan', isTarget && isAdzan);
+    });
+    currentHighlightedKey = key;
+  }
+
+  function tickCountdown() {
+    var recent = findRecentPrayer();
+
+    // ===== State 1: Waktu adzan (5 menit setelah sholat) =====
+    if (recent) {
+      var label = getLabel(recent.key);
+      if (labelEl) labelEl.innerHTML = 'Waktu <strong id="prayer-next-name">' + label + '</strong>';
+      if (countdownTimeEl) countdownTimeEl.textContent = 'Waktunya Shalat';
+      if (countdownEl) countdownEl.classList.add('is-adzan');
+      highlightPrayer(recent.key, true);  // true = adzan mode
+      return;
+    }
+
+    // ===== State 2: Countdown normal =====
+    if (countdownEl) countdownEl.classList.remove('is-adzan');
+
+    var next = findNextPrayer();
+    if (!next) return;
+
+    var nextLabel = getLabel(next.key);
+    if (labelEl) labelEl.innerHTML = 'Menuju waktu Shalat <strong id="prayer-next-name">' + nextLabel + '</strong>';
+    highlightPrayer(next.key, false);  // false = normal mode
+
+    var diff = next.date - new Date();
+    if (countdownTimeEl) countdownTimeEl.textContent = formatCountdown(diff);
+  }
+
+  function startCountdown() {
+    if (countdownEl) countdownEl.hidden = false;
+    tickCountdown();
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownInterval = setInterval(tickCountdown, 1000);
+  }
+
+  function renderList(jadwal, isJumat) {
+    var html = '';
+    PRAYER_ORDER.forEach(function (p) {
+      var time = jadwal[p.key];
+      if (!time) return;
+
+      var label = p.label;
+      if (p.key === 'dzuhur' && isJumat) label = "Jum'at";
+
+      html += '<div class="prayer-item" data-key="' + p.key + '">' +
+        '<span class="prayer-icon prayer-icon--' + p.icon + '"></span>' +
+        '<span class="prayer-item-name">' + label + '</span>' +
+        '<span class="prayer-item-time">' + time + '</span>' +
+        '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.hidden = false;
+    if (loadingEl) loadingEl.style.display = 'none';
+  }
+
+  function renderError(msg) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    listEl.hidden = true;
+    var old = widget.querySelector('.prayer-error');
+    if (old) old.remove();
+
+    var div = document.createElement('div');
+    div.className = 'prayer-error';
+    div.innerHTML =
+      '<i class="fa-solid fa-circle-exclamation"></i>' +
+      '<p>' + msg + '</p>' +
+      '<button class="prayer-retry" id="prayer-retry">' +
+      '<i class="fa-solid fa-rotate-right"></i> Coba Lagi</button>';
+    widget.appendChild(div);
+
+    var retry = document.getElementById('prayer-retry');
+    if (retry) retry.addEventListener('click', fetchAll);
+  }
+
+  function fetchAll() {
+    if (loadingEl) loadingEl.style.display = 'flex';
+    listEl.hidden = true;
+    if (countdownEl) countdownEl.hidden = true;
+    currentHighlightedKey = null;
+
+    var old = widget.querySelector('.prayer-error');
+    if (old) old.remove();
+
+    if (dateEl) dateEl.textContent = 'Memuat tanggal...';
+
+    Promise.all([
+      fetch(API_SHOLAT).then(function (r) { return r.json(); }),
+      fetch(API_KALENDER).then(function (r) { return r.json(); })
+    ])
+      .then(function (results) {
+        var sholatRes = results[0];
+        var kalenderRes = results[1];
+
+        if (!sholatRes.status || !sholatRes.data || !sholatRes.data.jadwal) {
+          throw new Error('Data jadwal tidak valid');
+        }
+
+        var keys = Object.keys(sholatRes.data.jadwal);
+        if (!keys.length) throw new Error('Jadwal kosong');
+        var jadwal = sholatRes.data.jadwal[keys[0]];
+        isJumatToday = (jadwal.tanggal || '').indexOf('Jumat') !== -1;
+
+        jadwalTimes = {
+          subuh: jadwal.subuh,
+          dzuhur: jadwal.dzuhur,
+          ashar: jadwal.ashar,
+          maghrib: jadwal.maghrib,
+          isya: jadwal.isya
+        };
+
+        var masehi = '';
+        var hijri = '';
+        if (kalenderRes.status && kalenderRes.data) {
+          var ce = kalenderRes.data.ce;
+          var hj = kalenderRes.data.hijr;
+          masehi = ce.today + ' M';
+          hijri = hj.day + ' ' + hj.monthName + ' ' + hj.year + ' H';
+        }
+
+        var fullDate = masehi && hijri
+          ? masehi + ' \u00B7 ' + hijri
+          : (masehi || hijri || 'Tanggal tidak tersedia');
+
+        if (dateEl) dateEl.textContent = fullDate;
+
+        renderList(jadwal, isJumatToday);
+        startCountdown();
+      })
+      .catch(function (err) {
+        console.error('Prayer widget error:', err);
+        renderError('Gagal memuat jadwal sholat. Periksa koneksi internet Anda.');
+      });
+  }
+
+  fetchAll();
+})();

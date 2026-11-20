@@ -31,6 +31,58 @@
   </div>
 </section>
 
+<!-- =========================================
+     JADWAL SHALAT HARI INI
+     ========================================= -->
+<section class="prayer-section reveal">
+  <div class="prayer-widget" id="prayer-widget">
+
+    <!-- Header -->
+    <div class="prayer-header">
+      <div class="prayer-header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path fill="currentColor" d="m13.025 11.5l1.475-1.075l1.45 1.075l-.575-1.7l1.475-1.075h-1.8L14.5 7l-.55 1.725h-1.825L13.6 9.8zM12 17q2.075 0 3.538-1.45T17 12q0-.2-.012-.4t-.063-.4q-.275 1.175-1.225 1.938t-2.225.762q-1.5 0-2.525-1.025T9.925 10.35q0-1.15.65-2.062T12.275 7H12Q9.9 7 8.45 8.463T7 12q0 2.1 1.45 3.55T12 17m0 6.3L8.65 20H4v-4.65L.7 12L4 8.65V4h4.65L12 .7L15.35 4H20v4.65L23.3 12L20 15.35V20h-4.65zm0-2.8l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18h3.5zm0-8.5" />
+        </svg>
+      </div>
+      <div class="prayer-header-text">
+        <p class="prayer-location">Kab. Garut &middot; Jawa Barat</p>
+        <p class="prayer-date" id="prayer-date">Memuat tanggal...</p>
+      </div>
+    </div>
+
+    <!-- Countdown Timer -->
+    <div class="prayer-countdown" id="prayer-countdown" hidden>
+      <div class="prayer-countdown-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="100%" height="100%">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+          <line x1="12" y1="12" x2="12" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="clock-hour"/>
+          <line x1="12" y1="12" x2="12" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="clock-minute"/>
+          <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="prayer-countdown-text">
+        <span class="prayer-countdown-label" id="prayer-countdown-label">Menuju waktu Shalat<strong id="prayer-next-name">--</strong></span>
+        <span class="prayer-countdown-time" id="prayer-countdown-time">--:--:--</span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="prayer-loading" id="prayer-loading">
+      <div class="prayer-loading-dot"></div>
+      <div class="prayer-loading-dot"></div>
+      <div class="prayer-loading-dot"></div>
+    </div>
+
+    <!-- List Jadwal (1 kolom) -->
+    <div class="prayer-list" id="prayer-list" hidden></div>
+
+    <p class="prayer-source">
+      Sumber: <a href="https://api.myquran.com" target="_blank" rel="noopener">MyQuran API</a> &middot; Kemenag Bimas Islam
+    </p>
+  </div>
+</section>
+
 <section class="achievements">
   <div class="section-header reveal">
     <p class="section-kicker"><i class="fa-solid fa-star"></i> Pencapaian</p>

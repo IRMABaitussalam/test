@@ -894,3 +894,297 @@ body.no-scroll { overflow: hidden; }
   color: var(--text-soft);
   opacity: 0.6;
 }
+
+/* =========================================================
+   PRAYER WIDGET
+   ========================================================= */
+.prayer-section { margin: 2rem 0 3rem; }
+
+.prayer-widget {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.prayer-widget::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.4' opacity='0.05'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z'/%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.prayer-widget > * { position: relative; z-index: 1; }
+
+/* Header */
+.prayer-header {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.25rem; padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.prayer-header-icon {
+  flex-shrink: 0; width: 48px; height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+}
+[data-theme="dark"] .prayer-header-icon {
+  background: linear-gradient(135deg, var(--gold-300), var(--gold-500));
+  color: #051a12;
+}
+.prayer-header-text { flex: 1; min-width: 0; }
+.prayer-location {
+  font-size: 0.72rem; color: var(--text-soft);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 0.2rem;
+}
+.prayer-date {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* Countdown */
+.prayer-countdown {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+[data-theme="dark"] .prayer-countdown { background: rgba(52, 211, 153, 0.1); }
+.prayer-countdown-icon {
+  flex-shrink: 0; width: 32px; height: 32px;
+  color: var(--accent);
+}
+.clock-hour { transform-origin: 12px 12px; animation: clockHour 120s linear infinite; }
+.clock-minute { transform-origin: 12px 12px; animation: clockMinute 10s linear infinite; }
+@keyframes clockHour { to { transform: rotate(360deg); } }
+@keyframes clockMinute { to { transform: rotate(360deg); } }
+
+.prayer-countdown-text {
+  display: flex; flex-direction: column; gap: 0.1rem;
+}
+.prayer-countdown-label {
+  font-size: 0.78rem; color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.prayer-countdown-label strong {
+  color: var(--accent); font-weight: 700;
+}
+.prayer-countdown-time {
+  font-family: var(--font-display);
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--text); line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* List Jadwal (1 kolom) */
+.prayer-list {
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.prayer-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.prayer-item:hover {
+  transform: translateX(3px);
+  border-color: var(--gold);
+}
+.prayer-item--highlight {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+[data-theme="dark"] .prayer-item--highlight { background: rgba(52, 211, 153, 0.1); }
+
+.prayer-icon {
+  flex-shrink: 0; font-size: 1.15rem;
+  color: var(--gold);
+}
+.prayer-item--highlight .prayer-icon { color: var(--accent); }
+
+.prayer-item-name {
+  flex: 1;
+  font-size: 0.9rem; font-weight: 500;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+.prayer-item--highlight .prayer-item-name {
+  color: var(--accent); font-weight: 700;
+}
+
+.prayer-item-time {
+  font-family: var(--font-display);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--text); letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.prayer-item--highlight .prayer-item-time { color: var(--accent); }
+
+/* Loading */
+.prayer-loading {
+  display: flex; justify-content: center; gap: 0.5rem;
+  padding: 2rem 0;
+}
+.prayer-loading-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gold); opacity: 0.4;
+  animation: prayerDot 1.2s ease-in-out infinite;
+}
+.prayer-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.prayer-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes prayerDot {
+  0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+  40%           { opacity: 1; transform: translateY(-6px); }
+}
+
+/* Sumber */
+.prayer-source {
+  margin-top: 1.25rem; text-align: center;
+  font-size: 0.72rem; color: var(--text-soft);
+}
+.prayer-source a {
+  color: var(--text-soft); text-decoration: underline;
+  text-decoration-color: transparent; transition: text-decoration-color 0.2s;
+}
+.prayer-source a:hover { text-decoration-color: var(--text-soft); }
+
+/* Ikon jadwal (mask SVG) */
+.prayer-icon {
+  display: inline-block; width: 1em; height: 1em;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+}
+
+.prayer-icon--imsak {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath fill='black' fill-rule='evenodd' d='M12 4C16.9706 4 21 8.0294 21 13C21 17.9706 16.9706 22 12 22C7.0294 22 3 17.9706 3 13C3 8.0294 7.0294 4 12 4ZM11 9L11 13C11 13.5523 11.4477 14 12 14L16 14C16.5523 14 17 13.5523 17 13C17 12.4477 16.5523 12 16 12L13 12L13 9C13 8.4477 12.5523 8 12 8C11.4477 8 11 8.4477 11 9Z' clip-rule='evenodd' stroke='none'/%3E%3Cpath d='M3 5.0627C4.1606 3.7467 5.5957 2.7013 7.2042 2M21 5.0627C19.8394 3.7467 18.4043 2.7013 16.7958 2M8 19.9282L6.8038 22M16 19.9282L17.1962 22'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+.prayer-icon--shubuh {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M18.3264 13C18.7583 12.091 19 11.074 19 10C17.0185 11.585 14.1618 11.427 12.3673 9.633C10.5729 7.838 10.4147 4.982 12 3C8.134 3 5 6.134 5 10C5 11.074 5.2417 12.091 5.6736 13M4 17H20M5 21H10M14 21H19'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+.prayer-icon--terbit {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M7.5 18C7.5 15.5147 9.5147 13.5 12 13.5C14.4853 13.5 16.5 15.5147 16.5 18M2 18H3.5M20.5 18H22M4.9289 10.9289L5.9896 11.9896M19.0711 10.9289L18.0104 11.9896M2 22H22M12 9V2M8.5 5.5L12 2L15.5 5.5'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+.prayer-icon--dhuha {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='M16.5 12C16.5 14.4853 14.4853 16.5 12 16.5C9.5147 16.5 7.5 14.4853 7.5 12C7.5 9.5147 9.5147 7.5 12 7.5C14.4853 7.5 16.5 9.5147 16.5 12Z'/%3E%3Cpath fill='black' d='M21.5 12C21.5 12.5523 21.0523 13 20.5 13C19.9477 13 19.5 12.5523 19.5 12C19.5 11.4477 19.9477 11 20.5 11C21.0523 11 21.5 11.4477 21.5 12ZM19.0104 18.0104C19.0104 18.5627 18.5627 19.0104 18.0104 19.0104C17.4581 19.0104 17.0104 18.5627 17.0104 18.0104C17.0104 17.4581 17.4581 17.0104 18.0104 17.0104C18.5627 17.0104 19.0104 17.4581 19.0104 18.0104ZM13 20.5C13 21.0523 12.5523 21.5 12 21.5C11.4477 21.5 11 21.0523 11 20.5C11 19.9477 11.4477 19.5 12 19.5C12.5523 19.5 13 19.9477 13 20.5ZM6.9896 18.0104C6.9896 18.5627 6.5419 19.0104 5.9896 19.0104C5.4373 19.0104 4.9896 18.5627 4.9896 18.0104C4.9896 17.4581 5.4373 17.0104 5.9896 17.0104C6.5419 17.0104 6.9896 17.4581 6.9896 18.0104ZM4.5 12C4.5 12.5523 4.0523 13 3.5 13C2.9477 13 2.5 12.5523 2.5 12C2.5 11.4477 2.9477 11 3.5 11C4.0523 11 4.5 11.4477 4.5 12ZM6.9896 5.9896C6.9896 6.5419 6.5419 6.9896 5.9896 6.9896C5.4373 6.9896 4.9896 6.5419 4.9896 5.9896C4.9896 5.4373 5.4373 4.9896 5.9896 4.9896C6.5419 4.9896 6.9896 5.4373 6.9896 5.9896ZM13 3.5C13 4.0523 12.5523 4.5 12 4.5C11.4477 4.5 11 4.0523 11 3.5C11 2.9477 11.4477 2.5 12 2.5C12.5523 2.5 13 2.9477 13 3.5ZM19.0104 5.9896C19.0104 6.5419 18.5627 6.9896 18.0104 6.9896C17.4581 6.9896 17.0104 6.5419 17.0104 5.9896C17.0104 5.4373 17.4581 4.9896 18.0104 4.9896C18.5627 4.9896 19.0104 5.4373 19.0104 5.9896Z' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+.prayer-icon--dzuhur {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath fill='black' d='M17.5 12C17.5 15.0377 15.0377 17.5 12 17.5C8.9624 17.5 6.5 15.0377 6.5 12C6.5 8.9624 8.9624 6.5 12 6.5C15.0377 6.5 17.5 8.9624 17.5 12Z' stroke='none'/%3E%3Cpath d='M20.5 12L22 12M18.0104 18.0104L19.0711 19.0711M12 20.5L12 22M5.9896 18.0104L4.9289 19.0711M3.5 12L2 12M5.9896 5.9896L4.9289 4.9289M12 3.5L12 2M18.0104 5.9896L19.0711 4.9289'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+.prayer-icon--ashar {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath fill='black' fill-rule='evenodd' d='M10 23C7.7909 23 6 21.2091 6 19C6 17.1481 7.2712 15.5383 9.0727 15.109C9.509 12.4509 11.8063 10.5 14.5 10.5C17.1937 10.5 19.491 12.4509 19.9273 15.109C21.7288 15.5383 23 17.1481 23 19C23 21.2091 21.2091 23 19 23L10 23Z' clip-rule='evenodd' stroke='none'/%3E%3Cpath d='M7.6787 10.9281C7.5606 10.6329 7.5 10.3179 7.5 10C7.5 8.6193 8.6193 7.5 10 7.5C10.5583 7.5 11.1004 7.6868 11.5402 8.0308M3.5 10L2 10M5.4038 5.4038L4.3431 4.3431M10 3.5L10 2M14.5962 5.4038L15.6569 4.3431'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+.prayer-icon--maghrib {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M7.5 18C7.5 15.5147 9.5147 13.5 12 13.5C14.4853 13.5 16.5 15.5147 16.5 18M2 18H3.5M20.5 18H22M4.9289 10.9289L5.9896 11.9896M19.0711 10.9289L18.0104 11.9896M2 22H22M12 2V9M8.5 5.5L12 9L15.5 5.5'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+.prayer-icon--isya {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 12C21 16.9706 16.9706 21 12 21C7.0294 21 3 16.9706 3 12C3 7.0294 7.0294 3 12 3C9.9618 5.5477 10.1652 9.2206 12.4723 11.5277C14.7794 13.8348 18.4523 14.0382 21 12Z'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg); mask-image: var(--svg);
+}
+
+@media (max-width: 520px) {
+  .prayer-widget { padding: 1.25rem; }
+  .prayer-countdown-time { font-size: 1rem; }
+  .prayer-item-time { font-size: 1rem; }
+}
+/* =========================================================
+   PRAYER COUNTDOWN — STATE ADZAN (5 menit)
+   ========================================================= */
+.prayer-countdown.is-adzan {
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  border-color: var(--gold-500);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+}
+
+.prayer-countdown.is-adzan .prayer-countdown-icon { color: #fff; }
+.prayer-countdown.is-adzan .prayer-countdown-label { color: rgba(255, 255, 255, 0.9); }
+.prayer-countdown.is-adzan .prayer-countdown-label strong { color: #fff; }
+.prayer-countdown.is-adzan .prayer-countdown-time {
+  color: #fff;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  animation: adzanPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes adzanPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.75; }
+}
+
+/* Di dark mode, gradient emas tetap kontras */
+[data-theme="dark"] .prayer-countdown.is-adzan {
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
+}
+/* =========================================================
+   PRAYER ITEM — ADZAN BLINK (5 menit)
+   ========================================================= */
+.prayer-item.is-adzan {
+  animation: prayerAdzanGlow 1.2s ease-in-out infinite;
+  border-color: var(--gold) !important;
+}
+
+@keyframes prayerAdzanGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5);
+    border-color: var(--gold);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(212, 175, 55, 0);
+    border-color: var(--gold-300);
+    transform: scale(1.015);
+  }
+}
+
+/* Ikon & teks ikut "bernyawa" saat adzan */
+.prayer-item.is-adzan .prayer-icon {
+  color: var(--gold);
+  animation: adzanIconPulse 1.2s ease-in-out infinite;
+}
+
+.prayer-item.is-adzan .prayer-item-name,
+.prayer-item.is-adzan .prayer-item-time {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+@keyframes adzanIconPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+
+/* Dark mode — warna emas tetap kontras */
+[data-theme="dark"] .prayer-item.is-adzan {
+  background: rgba(212, 175, 55, 0.12);
+}
